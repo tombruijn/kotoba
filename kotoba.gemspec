@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 require File.expand_path("../lib/kotoba/version", __FILE__)
 
 Gem::Specification.new do |gem|
@@ -9,9 +7,9 @@ Gem::Specification.new do |gem|
   gem.email         = [
     "tom@tomdebruijn.com"
   ]
-  gem.description   = "Book manager in Ruby"
-  gem.summary       = "Book manager in Ruby"
-  gem.homepage      = "http://github.com/machinery/kotoba"
+  gem.description   = "Book manager in Ruby for Markdown files. Exports to PDF."
+  gem.summary       = "Book manager in Ruby for Markdown files. Exports to PDF."
+  gem.homepage      = "http://github.com/tombruijn/kotoba"
   gem.license       = "MIT"
 
   gem.files         = `git ls-files`.split($\)
