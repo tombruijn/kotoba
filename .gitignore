@@ -1,0 +1,4 @@
+coverage
+.rspec
+Gemfile.lock
+spec/tmp
