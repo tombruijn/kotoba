@@ -33,9 +33,28 @@ them on export.
 
 ### Writing your book
 
-Write your book in Markdown files. It's easy enough
+Write your book in Markdown files. It's easy enough to start since you
+can use your own editor. Create a new file in the `book/chapters` directory
+to get started. Alternatively, if you like more management of your files,
+create subdirectories for each chapter and place your files in each directory.
 
-TODO: Explain how Markdown metadata works and how this can be useful in
+Example:
+
+```
+book/
+- chapters/
+  - 01_intro/
+    - 01_intro.md
+    - 02_prelude.md
+  - 02_hello/
+    - 01_hello-world.md
+```
+
+Note: Kotoba uses a alphabetic sorting, which pretty closely resembles most
+operating systems' sorting. Numbers and symbols are sorted before letters.
+Other than for sorting purposes it does not matter what your files are called.
+
+__TODO___: Explain how Markdown metadata works and how this can be useful in
 combination with the server.
 
 ### Exporting `kotoba export`
@@ -70,7 +89,7 @@ It will place the export result into this directory when it is done.
   - A simple overview of all chapters.
     Shows a short summary/full summary or keywords, multiple views will be
     supported.
-  - Page-_like_ preview.  
+  - Page - _like_ preview.  
     Actual pages with page breaks, like LibreOffice/OpenOffice Writer or
     Microsoft Office Word, will probably not be supported in this preview mode.
   - Keywords link to a keyword page which lists all chapters where they occur.
