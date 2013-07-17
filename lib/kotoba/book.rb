@@ -4,13 +4,7 @@ module Kotoba
 
     def initialize
       @parser = Parser.new
-      @templates = []
-      load
-    end
-
-    def load
-      return @templates unless @templates.empty?
-      @templates = parser.collect
+      @templates = @parser.collect
     end
   end
 end
