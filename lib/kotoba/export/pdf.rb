@@ -6,12 +6,6 @@ module Kotoba
       def export
         Document.generate(file, prawn_options) do |prawn|
           prawn.book.templates.each do |template|
-            if template.metadata && template.metadata["title"]
-              section = { :name => template.metadata["title"], :file => template.file }
-              prawn.sections << section
-              prawn.current_section = section[:file]
-            end
-
             if prawn.config.support_sections
               template.sections.each do |section|
                 markdown = Maruku.new(section)
@@ -27,13 +21,7 @@ module Kotoba
           prawn.page_numbering!
           prawn.header!
           prawn.footer!
-          prawn.sections.each do |section|
-            prawn.outline.section(section[:name], :destination => section[:page]) do
-              prawn.list[section[:file]].each do |header|
-                prawn.outline.page(:title => header[:name], :destination => header[:page])
-              end
-            end
-          end
+          prawn.outline!
         end
       end
 

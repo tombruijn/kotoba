@@ -125,4 +125,67 @@ describe Kotoba::Document do
       end
     end
   end
+
+  describe "document outline" do
+    let(:headings) do
+      [
+        { name: "Chapter 1", page: 1, level: 1, children: [] },
+        { name: "Chapter 2", page: 2, level: 1, children: [
+            { name: "Chapter 3", page: 3, level: 2, children: [] }
+          ]
+        }
+      ]
+    end
+    before do
+      document.headings = headings
+      3.times { document.start_new_page }
+    end
+
+    describe ".outline!" do
+      it "should call outline generation method" do
+        document.should_receive(:outline_chapter_headings).with(kind_of(Array))
+        document.outline!
+      end
+    end
+
+    describe ".outline_chapter_headings" do
+      before { document.send(:outline_chapter_headings, headings) }
+
+      it "should add a chapter to the outline" do
+        find_chapter_by_title(document, "Chapter 1").should_not be_nil
+      end
+
+      it "should add a parent chapter to the outline" do
+        find_chapter_by_title(document, "Chapter 2").should_not be_nil
+      end
+
+      it "should add nested chapters to the outline" do
+        find_chapter_by_title(document, "Chapter 3").should_not be_nil
+      end
+    end
+  end
+end
+
+# Renders the Prawn document to a PDF which is then read to extract
+# details about the end result
+#
+def render_and_find_objects(document)
+  output = StringIO.new(document.render, "r+")
+  hash = PDF::Reader::ObjectHash.new(output)
+end
+
+# Outline titles are stored as UTF-16. This method accepts a UTF-8 outline title
+# and returns the PDF Object that contains an outline with that name
+# https://github.com/prawnpdf/prawn/blob/master/spec/outline_spec.rb#L410
+#
+def find_chapter_by_title(document, title)
+  hash = render_and_find_objects(document)
+  hash.values.select do |o|
+    if o.is_a?(Hash) && o[:Title]
+      title_codepoints = o[:Title].unpack("n*")
+      title_codepoints.shift
+      utf8_title = title_codepoints.pack("U*")
+      utf8_title == title ? o : nil
+    end
+  end
 end

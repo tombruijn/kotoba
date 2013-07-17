@@ -39,16 +39,37 @@ module MaRuKu::Out::Prawn
     decoded = HTMLEntities.new.decode(html)
     decoded
   end
-  
+
   def to_prawn_header(header)
     options = options_for(:heading, header.level)
     prawn.text to_text(header.children), options
-    prawn.list[prawn.current_section]
-    prawn.list[prawn.current_section] << {
+
+    # Save heading so we can build the Table of Contents later on
+    heading = {
       :name => to_text(header.children),
       :level => header.level,
-      :page => prawn.page_count
+      :page => prawn.page_count,
+      :children => []
     }
+    parent = find_parent_heading_for_level(@last_heading, header.level)
+    if parent
+      # Heading is sub heading
+      heading[:parent] = parent
+      parent[:children] << heading
+    else
+      # Heading is root level heading
+      prawn.headings << heading
+    end
+    @last_heading = heading
+  end
+
+  def find_parent_heading_for_level(heading, level)
+    return if heading.nil?
+    if heading[:level] == level - 1
+      heading
+    else
+      find_parent_heading_for_level(heading[:parent], level)
+    end
   end
 
   def to_prawn_ol(ol)
