@@ -7,9 +7,7 @@ describe Kotoba::Parser do
   let(:parser) { Kotoba::Parser.new }
 
   describe ".collect" do
-    let(:directory) do
-      File.join(Kotoba::BOOK_DIR, "chapters", "chapter_1")
-    end
+    let(:directory) { File.join(Kotoba::BOOK_DIR, "chapters", "chapter_1") }
     before { parser.collect }
     subject { parser.files }
 
@@ -18,7 +16,13 @@ describe Kotoba::Parser do
     its(:length) { should == 2 }
   end
 
-  pending ".create_template"
+  describe ".create_template" do
+    subject { parser.create_template(file) }
+
+     it "should create a template from a file path" do
+       subject.should be_instance_of Kotoba::Template
+     end
+   end
 
   describe ".read_file" do
     subject { parser.read_file(file) }
