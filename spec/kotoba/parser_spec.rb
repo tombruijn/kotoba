@@ -1,15 +1,12 @@
 require "spec_helper"
 
 describe Kotoba::Parser do
-  let(:parser) { Kotoba::Parser.new }
-  before :all do
-    @chapter_dir = File.join(Kotoba::BOOK_DIR, "chapters", "chapter_1")
+  let(:file) do
+    File.join(Kotoba::BOOK_DIR, "chapters", "chapter_1", "intro_file.md")
   end
+  let(:parser) { Kotoba::Parser.new }
 
   describe ".collect" do
-    let(:file) do
-      File.join(Kotoba::BOOK_DIR, "chapters", "chapter_1", "intro_file.md")
-    end
     let(:directory) do
       File.join(Kotoba::BOOK_DIR, "chapters", "chapter_1")
     end
@@ -22,5 +19,20 @@ describe Kotoba::Parser do
   end
 
   pending ".create_template"
-  pending ".read_file"
+
+  describe ".read_file" do
+    subject { parser.read_file(file) }
+
+    it "should read the file" do
+      subject.should == File.read(file)
+    end
+
+    it "should force the defined encoding" do
+      Kotoba.config.encoding = "US-ASCII"
+      parser.read_file(file).encoding.name.should == "US-ASCII"
+
+      Kotoba.config.encoding = "UTF-8"
+      parser.read_file(file).encoding.name.should == "UTF-8"
+    end
+  end
 end
