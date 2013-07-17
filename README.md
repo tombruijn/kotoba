@@ -84,7 +84,7 @@ work.
 
 `config.rb`
 
-```
+```ruby
 require "kotoba"
 
 Kotoba.config do |config|
