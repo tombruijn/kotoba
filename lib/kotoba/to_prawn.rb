@@ -147,5 +147,5 @@ module MaRuKu::Out::Prawn
     options
   end
 end
- 
+
 MaRuKu::MDElement.send(:include, MaRuKu::Out::Prawn)

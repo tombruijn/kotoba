@@ -4,15 +4,9 @@ describe MaRuKu::Out::Prawn do
   let(:text) { "" }
   let(:prawn) { Kotoba::Document.new }
   let(:out) { Maruku.new(text) }
-  before do
-    out.stub(:prawn => prawn)
-  end
 
   describe ".to_prawn" do
-    let(:prawn) { mock }
-    before { out.stub(:array_to_prawn) }
-
-    it "set prawn" do
+    it "should set prawn" do
       out.to_prawn(prawn)
       out.prawn.should == prawn
     end
@@ -21,6 +15,11 @@ describe MaRuKu::Out::Prawn do
       out.paragraph_count.should be_nil
       out.to_prawn(prawn)
       out.paragraph_count.should == 0
+    end
+
+    it "should initiate the conversion of Markdown to prawn" do
+      out.should_receive(:array_to_prawn).with(kind_of(Array))
+      out.to_prawn(prawn)
     end
   end
 
@@ -77,6 +76,8 @@ describe MaRuKu::Out::Prawn do
       let(:text) { "# header" }
 
       it { subject.should_receive(:text).with("header", kind_of(Hash)) }
+
+      pending "addition of header to Table of Contents"
     end
 
     describe ".to_prawn_paragraph" do
@@ -200,7 +201,7 @@ describe MaRuKu::Out::Prawn do
     pending ".to_prawn_div"
     pending "for all methods, see: https://github.com/bhollis/maruku/blob/master/lib/maruku/output/to_html.rb"
 
-    after { out.to_prawn(mock(:text => nil)) }
+    after { out.to_prawn(prawn) }
   end
 
   describe ".wrap_around_prawn_inline_formatting_for" do
@@ -213,6 +214,7 @@ describe MaRuKu::Out::Prawn do
         :size => 13.pt,
         :character_spacing => 2.5
       )
+      out.stub(:prawn => prawn)
     end
     subject { out.send(:prawn_inline_formatting_for, :code, inline_code) }
 

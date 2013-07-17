@@ -11,18 +11,20 @@ describe Kotoba::Export::Pdf do
 
   describe "sections support" do
     let(:exporter) { Kotoba::Export::Pdf.new }
-    let(:template) { mock(:metadata => {}) }
+    let(:template) { Kotoba::Template.new("a file", "source of a file") }
     before do
       exporter.should_receive(:prawn_options).and_return({})
-      book = mock(:templates => [template])
+      book = Kotoba::Book.new
+      book.instance_variable_set("@templates", [template])
       Kotoba.should_receive(:book).and_return(book)
     end
 
     context "on" do
+      let(:section) { "I'm a section!" }
+      let!(:maruku) { Maruku.new(section) }
+
       it "should call templates for sections" do
-        section = mock
         template.should_receive(:sections).and_return([section])
-        maruku = mock
         Maruku.should_receive(:new).with(section).and_return(maruku)
         maruku.should_receive(:to_prawn).with(kind_of(Prawn::Document))
       end
@@ -31,12 +33,13 @@ describe Kotoba::Export::Pdf do
     end
 
     context "off" do
+      let(:source) { "I'm a source!" }
+      let!(:maruku) { Maruku.new(source) }
       before { Kotoba.config.stub(:support_sections => false) }
 
       it "should call for template source" do
-        template.should_receive(:source).and_return("source!")
-        maruku = mock
-        Maruku.should_receive(:new).with("source!").and_return(maruku)
+        template.should_receive(:source).and_return(source)
+        Maruku.should_receive(:new).with(source).and_return(maruku)
         maruku.should_receive(:to_prawn).with(kind_of(Prawn::Document))
       end
     end
@@ -50,7 +53,9 @@ describe Kotoba::Export::Pdf do
         parser = Kotoba::Parser.new
         Kotoba::Parser.should_receive(:new).and_return(parser)
         parser.should_receive(:files).
-          and_return([File.join(Kotoba::BOOK_DIR, "chapters", "chapter_1", "markdown.md")])
+          and_return(
+            [File.join(Kotoba::BOOK_DIR, "chapters", "chapter_1", "markdown.md")
+          ])
       end
 
       it "should move cursor between chapters sections" do
