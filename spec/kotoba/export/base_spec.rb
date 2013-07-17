@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Kotoba::Export::Base do
-  describe ".get" do
+  describe "#get" do
     context "existing exporter" do
       subject { Kotoba::Export::Base.get(:text) }
 
@@ -18,14 +18,14 @@ describe Kotoba::Export::Base do
   end
 
   describe "#export" do
+    let(:exporter) { Kotoba::Export::Base.new }
     before do
-      @exporter = mock
       Kotoba.config.should_receive(:check_requirements)
-      Kotoba.config.should_receive(:exporters).and_return([@exporter])
+      Kotoba.config.should_receive(:exporters).and_return([exporter])
     end
 
     it "should call the configured exporters and prepare for export" do
-      @exporter.should_receive(:export)
+      exporter.should_receive(:export)
       Kotoba::Export::Base.should_receive(:prepare_build_directory)
     end
 
@@ -44,6 +44,7 @@ describe Kotoba::Export::Base do
 
   describe ".filename_with_extension" do
     let(:export) { Kotoba::Export::Base.new }
+
     context "with extension" do
       before do
         Kotoba.config.should_receive(:filename).and_return("file")
@@ -69,7 +70,6 @@ describe Kotoba::Export::Base do
     let(:exporter) { Kotoba::Export::Base.new }
     before do
       exporter.filename = "remove_me_please"
-      # raise exporter.file
       File.open(exporter.file, "w") do |file|
         file << "hello!"
       end

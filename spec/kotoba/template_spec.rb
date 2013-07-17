@@ -21,14 +21,12 @@ Second section
 
     its(:file) { should == "file.md" }
     its(:source) { should include "First section" }
-    its(:metadata) { should_not == {} }
+    its(:metadata) { should_not be_empty }
     its(:"sections.length") { should == 2 }
   end
 
   describe ".extract_metadata" do
-    before do
-      template.extract_metadata
-    end
+    before { template.extract_metadata }
     subject { template.metadata }
 
     context "file with metadata" do
@@ -43,7 +41,7 @@ Actual content here
         TEXT
       end
 
-      it "should find metadata" do
+      it "should extract metadata" do
         should == { "title" => "Meta data", "author" => "Jane Doe" }
       end
 
@@ -53,11 +51,11 @@ Actual content here
       end
     end
 
-    context "file without metadata" do
+    context "a file without metadata" do
       let(:text) { "hello world" }
 
       it "should not find metadata" do
-        should == {}
+        should be_empty
       end
     end
   end
