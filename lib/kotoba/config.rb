@@ -51,7 +51,8 @@ module Kotoba
         require config_file
         check_requirements
       else
-        raise "Could not find config.rb file in directory: #{APP_DIR}"
+        puts "Could not find config.rb file in directory: #{APP_DIR}"
+        exit(1)
       end
     end
 
