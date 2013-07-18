@@ -41,34 +41,6 @@ module Kotoba
       end
     end
 
-    def header_position
-      Proc.new do |array_index|
-        array_index==0 ? left_position : header_top_position
-      end
-    end
-
-    def header_top_position
-      layout.page_height - layout.margin.bottom
-    end
-
-    def footer_position
-      Proc.new do |array_index|
-        array_index==0 ? left_position : footer_top_position
-      end
-    end
-
-    def footer_top_position
-      0
-    end
-
-    def left_position
-      if page_number.even?
-        -(layout.margin.inner - layout.margin.outer)
-      else
-        0
-      end
-    end
-
     def header!
       repeat(:all, :dynamic => true) do
         if layout.header.content
@@ -117,6 +89,66 @@ module Kotoba
     end
 
     private
+
+    # Returns an Arary with x and y coordinates for the positioning
+    # of the header.
+    #
+    # @return [Array] An array with x and y coordinates for the header position
+    #                 of the current page.
+    #
+    def header_position
+      [left_position, header_top_position]
+    end
+
+    # Returns the y coordinate for the header. This is calculated using the
+    # page height - the margin of the bounding box at the bottom of the page
+    # This positions the content at the very top of the page.
+    #
+    # @return [Integer] returns the y coordinate for the header
+    #
+    def header_top_position
+      layout.page_height - layout.margin.bottom
+    end
+
+    # Returns an Arary with x and y coordinates for the positioning
+    # of the header.
+    #
+    # @return [Array] An array with x and y coordinates for the footer position
+    #                 of the current page.
+    #
+    def footer_position
+      [left_position, footer_top_position]
+    end
+
+    # Footer top position y coordinate
+    # Always return the Integer 0 as a y coordinate, as that is where the
+    # prawn cursor starts. At the end of the page, at the bottom of the
+    # bounding box.
+    #
+    # @return [Integer] Always returns 0
+    #
+    def footer_top_position
+      0
+    end
+
+    # Returns the x coordinate that represents the start of the bounding box's
+    # left side. This can differ if different inner and outer margins are
+    # specified for even and odd pages.
+    # Only even pages are really affected. The inner and outer margins are
+    # subtracted from one another and turned into a negative integer. This
+    # specifies how much the cursor should move to the left to match the page's
+    # bounding box left side.
+    #
+    # @return [Integer] returns 0 for odd pages and a negative integer for
+    #                   even pages.
+    #
+    def left_position
+      if page_number.even?
+        -(layout.margin.inner - layout.margin.outer)
+      else
+        0
+      end
+    end
 
     # Tells Prawn the outline of the document, a table of contents.
     # Will automatically nest chapters as long as the nesting is

@@ -59,55 +59,47 @@ describe Kotoba::Document do
   pending "footer!"
 
   describe ".header_position" do
-    subject { document.header_position }
+    subject { document.send(:header_position) }
 
-    it { should be_kind_of(Proc) }
+    it { should be_kind_of(Array) }
 
     context "x-axis / left position" do
-      before { document.should_receive(:left_position).and_call_original }
-
       it { subject[0].should == 0 }
     end
 
     context "y-axis / top position" do
-      before { document.should_receive(:header_top_position).and_call_original }
-
       it { subject[1].should == 18 }
     end
   end
 
   describe ".header_top_position" do
-    subject { document.header_top_position }
+    subject { document.send(:header_top_position) }
 
     it { should == 18 }
   end
 
   describe ".footer_position" do
-    subject { document.footer_position }
+    subject { document.send(:footer_position) }
 
-    it { should be_kind_of(Proc) }
+    it { should be_kind_of(Array) }
 
     context "x-axis / left position" do
-      before { document.should_receive(:left_position).and_call_original }
-
       it { subject[0].should == 0 }
     end
 
     context "y-axis / top position" do
-      before { document.should_receive(:footer_top_position).and_call_original }
-
       it { subject[1].should == 0 }
     end
   end
 
   describe ".footer_top_position" do
-    subject { document.footer_top_position }
+    subject { document.send(:footer_top_position) }
 
     it { should == 0 }
   end
 
   describe ".left_position" do
-    subject { document.left_position }
+    subject { document.send(:left_position) }
 
     context "on odd page number" do
       before { document.stub(:page_number => 1) }
