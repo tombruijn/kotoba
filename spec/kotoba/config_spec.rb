@@ -94,7 +94,9 @@ describe Kotoba::Config do
       let(:config) { Kotoba::Config.new }
 
       it "should raise error" do
-        expect { config.load("wrong-config-file.rb") }.to raise_error
+        expect {
+          capture(:stdout) { config.load("wrong-config-file.rb") }
+        }.to raise_error
       end
     end
   end
