@@ -86,9 +86,10 @@ module Kotoba
     def to_h
       {
         :page_size => page_size,
+        :size => page_size,
+        :orientation => orientation,
         :top_margin => margin.top,
-        :bottom_margin => margin.bottom,
-        :orientation => orientation
+        :bottom_margin => margin.bottom
       }
     end
 

@@ -82,7 +82,7 @@ module Kotoba
       hash[:Keywords] = keywords if keywords
       hash[:Creator] = creator if creator
       hash[:Producer] = producer if producer
-      layout.to_h.merge(:info => hash)
+      {:info => hash}
     end
 
     protected

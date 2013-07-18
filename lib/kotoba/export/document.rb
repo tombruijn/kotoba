@@ -5,11 +5,16 @@ module Kotoba
     def initialize(options={}, &block)
       @sections = []
       @headings = []
-      super(options, &block)
+      super(page_options.merge(options), &block)
     end
 
     def start_new_page(options={})
-      margins = if page_count.odd?
+      super(page_options.merge(options))
+    end
+
+    def page_options
+      current_page_count = page_number || 1
+      page_options = if current_page_count.odd?
         {
           :left_margin => layout.margin.outer,
           :right_margin => layout.margin.inner
@@ -20,7 +25,7 @@ module Kotoba
           :right_margin => layout.margin.outer
         }
       end
-      super(margins.merge(options))
+      page_options.merge(layout.to_h)
     end
 
     def page_numbering!
