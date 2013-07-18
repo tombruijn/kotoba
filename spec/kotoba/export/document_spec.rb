@@ -35,7 +35,7 @@ describe Kotoba::Document do
 
       it "should add numbering" do
         document.should_receive(:number_pages).with("<page>", {
-          :at => kind_of(Proc),
+          :at => kind_of(Array),
           :width => 3,
           :align => :center,
           :start_count_at => 1,
