@@ -40,6 +40,12 @@ module MaRuKu::Out::Prawn
     decoded
   end
 
+  # Adds text to the prawn document styled as a heading
+  # It uses the styling for the selected heading level
+  #
+  # The heading is also saved in the headings list
+  # to build an PDF outline and Table of Contents later on
+  #
   def to_prawn_header(header)
     options = options_for(:heading, header.level)
     prawn.text to_text(header.children), options
@@ -61,15 +67,6 @@ module MaRuKu::Out::Prawn
       prawn.headings << heading
     end
     @last_heading = heading
-  end
-
-  def find_parent_heading_for_level(heading, level)
-    return if heading.nil?
-    if heading[:level] == level - 1
-      heading
-    else
-      find_parent_heading_for_level(heading[:parent], level)
-    end
   end
 
   def to_prawn_ol(ol)
@@ -122,6 +119,21 @@ module MaRuKu::Out::Prawn
   end
 
   protected
+
+  # Finds the parent heading for the given level
+  # Will move up the tree to find the parent of the heading level
+  # If no parent is found the heading is root
+  #
+  # @return [Hash, nil] the found parent (if any)
+  #
+  def find_parent_heading_for_level(heading, level)
+    return if heading.nil?
+    if heading[:level] == level - 1
+      heading
+    else
+      find_parent_heading_for_level(heading[:parent], level)
+    end
+  end
 
   def prawn_inline_formatting_for(element_type, element)
     layout = layout_for(element_type)
