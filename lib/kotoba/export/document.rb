@@ -36,26 +36,22 @@ module Kotoba
     def add_recurring_element(element_type)
       repeat(:all, :dynamic => true) do
         element_layout = layout
-        if element_type == :header
-          top_position = Proc.new { header_top_position }
-          element_height = element_layout.margin.top
-          element = element_layout.header
+        element = element_layout.send(element_type)
+        options = if element_type == :header
+          {
+            :top => Proc.new { header_top_position },
+            :height => element_layout.margin.top
+          }
         else
-          top_position = Proc.new { footer_top_position }
-          element_height = element_layout.margin.bottom
-          element = element_layout.footer
+          {
+            :top => Proc.new { footer_top_position },
+            :height => element_layout.margin.bottom
+          }
         end
+        options.merge!(:width => element_layout.content_width)
 
-        numbering_for_recurring_element(element,
-          :top => top_position,
-          :width => element_layout.content_width,
-          :height => element_height
-        )
-        content_for_recurring_element(element,
-          :top => top_position,
-          :width => element_layout.content_width,
-          :height => element_height
-        )
+        numbering_for_recurring_element(element, options)
+        content_for_recurring_element(element, options)
       end
     end
 
@@ -75,10 +71,19 @@ module Kotoba
     end
 
     # Creates a bounding box at a given top position
+    # It places it at the given top coordinate and left coordinate depending on
+    # the page number (even/odd) and layout.
+    # A block must be given to be executed inside the bounding box
+    #
+    # @param [Hash] options hash. Expected keys:
+    #                                           :top (proc that returns number)
+    #                                           :width (number)
+    #                                           :height (number)
+    # @param [block] block that should be called inside the bounding box
+    #
     def bounding_box_on(options={})
-      top_position = options.delete(:top)
       canvas do
-        bounding_box([left_position, top_position.call], options) do
+        bounding_box([left_position, options[:top].call], options) do
           yield
         end
       end

@@ -17,10 +17,6 @@ describe Kotoba::Document do
     end
   end
 
-  describe ".page_numbering!" do
-    pending
-  end
-
   describe ".page_numbering_for" do
     let(:document) { Kotoba::Document.new }
     let(:element) { Kotoba::Layout::RecurringElement.new }
@@ -58,44 +54,16 @@ describe Kotoba::Document do
   pending "header!"
   pending "footer!"
 
-  describe ".header_position" do
-    subject { document.send(:header_position) }
-
-    it { should be_kind_of(Array) }
-
-    context "x-axis / left position" do
-      it { subject[0].should == 0 }
-    end
-
-    context "y-axis / top position" do
-      it { subject[1].should == 18 }
-    end
-  end
-
   describe ".header_top_position" do
     subject { document.send(:header_top_position) }
 
-    it { should == 18 }
-  end
-
-  describe ".footer_position" do
-    subject { document.send(:footer_position) }
-
-    it { should be_kind_of(Array) }
-
-    context "x-axis / left position" do
-      it { subject[0].should == 0 }
-    end
-
-    context "y-axis / top position" do
-      it { subject[1].should == 0 }
-    end
+    it { should == 17 }
   end
 
   describe ".footer_top_position" do
     subject { document.send(:footer_top_position) }
 
-    it { should == 0 }
+    it { should == 2 }
   end
 
   describe ".left_position" do
@@ -105,7 +73,7 @@ describe Kotoba::Document do
       before { document.stub(:page_number => 1) }
 
       it "should left align based on default location of page" do
-        should == 0
+        should == 4
       end
     end
 
@@ -113,7 +81,7 @@ describe Kotoba::Document do
       before { document.stub(:page_number => 2) }
 
       it "should left align based on difference in inner and outer margin" do
-        should == -1
+        should == 3
       end
     end
   end
