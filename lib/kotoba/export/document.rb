@@ -62,10 +62,8 @@ module Kotoba
     def numbering_for_recurring_element(element, options={})
       numbering = element.numbering
       return unless numbering.active
-      numbering.document_page_count = page_count
       bounding_box_on(options) do
-        numbering.document_page_number = page_number
-        text numbering.format, :align => numbering.align
+        text numbering.format(page_number, page_count), :align => numbering.align
       end
     end
 

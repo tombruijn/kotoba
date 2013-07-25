@@ -276,16 +276,81 @@ describe Kotoba::Layout do
       let(:numbering) { Kotoba::Layout::RecurringElement::PageNumbering.new }
       before do
         numbering.active = true
-        numbering.string = "Page <page>"
+        numbering.string = "Page <page> of <total>"
         numbering.align = :right
-        numbering.start_count_at = 2
+        numbering.start_count_at = 1
       end
       subject { numbering }
 
       its(:active) { should be_true }
-      its(:string) { should == "Page <page>" }
+      its(:string) { should == "Page <page> of <total>" }
       its(:align) { should == :right }
-      its(:start_count_at) { should == 2 }
+      its(:start_count_at) { should == 1 }
+
+      describe ".format" do
+        before do
+          numbering.start_count_at = 0
+        end
+        subject { numbering.format(1, 2) }
+
+        it "should insert page number and total" do
+          subject.should == "Page 1 of 2"
+        end
+
+        context "without page total" do
+          subject { numbering.format(1) }
+
+          it { should == "Page 1 of <total>" }
+        end
+      end
+
+      describe ".calculate_page_number" do
+        subject { numbering.send(:calculate_page_number, 4) }
+
+        context "with page numbers based on start_count_at" do
+          before do
+            numbering.start_count_at = 5
+          end
+
+          it "should start numbering with the start_count_at value" do
+            subject.should == 8
+          end
+        end
+
+        context "with prawn page numbers" do
+          before do
+            numbering.start_count_at = 0
+          end
+
+          it "should not modify the page numbers" do
+            subject.should == 4
+          end
+        end
+      end
+
+      describe ".calculate_page_count" do
+        subject { numbering.send(:calculate_page_count, 6) }
+
+        context "with page count based on start_count_at" do
+          before do
+            numbering.start_count_at = 4
+          end
+
+          it "should take into account the start_count_at value" do
+            subject.should == 9
+          end
+        end
+
+        context "with prawn page numbers" do
+          before do
+            numbering.start_count_at = 0
+          end
+
+          it "should not modify the page count" do
+            subject.should == 6
+          end
+        end
+      end
     end
   end
 end
