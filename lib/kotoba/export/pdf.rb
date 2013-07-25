@@ -18,9 +18,7 @@ module Kotoba
             end
           end
 
-          prawn.page_numbering!
-          prawn.header!
-          prawn.footer!
+          prawn.add_recurring_elements!
           prawn.outline!
         end
       end

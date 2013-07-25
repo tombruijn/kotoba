@@ -28,48 +28,45 @@ module Kotoba
       page_options.merge(layout.to_h)
     end
 
-    def page_numbering!
-      page_numbering_for :header, layout.header
-      page_numbering_for :footer, layout.footer
+    def add_recurring_elements!
+      add_recurring_element(:header)
+      add_recurring_element(:footer)
     end
 
-    def page_numbering_for(element_type, element)
-      numbering = element.page_numbering
-      if numbering.active
-        number_pages numbering.string, {
-          :at => element_type == :header ? header_position : footer_position,
-          :width => layout.content_width,
-          :align => numbering.align,
-          :start_count_at => numbering.offset,
-          :color => element.color
-        }
-      end
-    end
-
-    def header!
+    def add_recurring_element(element_type)
       repeat(:all, :dynamic => true) do
-        if layout.header.content
-          bounding_box(
-            [left_position, header_top_position],
-            :width => layout.content_width,
-            :height => layout.margin.bottom
-          ) do
-            layout.header.content.call(self)
-          end
+        element_layout = layout
+        if element_type == :header
+          top_position = Proc.new { header_top_position }
+          element_height = element_layout.margin.top
+          element = element_layout.header
+        else
+          top_position = Proc.new { footer_top_position }
+          element_height = element_layout.margin.bottom
+          element = element_layout.footer
         end
+
+        content_for_recurring_element(element,
+          :top => top_position,
+          :width => element_layout.content_width,
+          :height => element_height
+        )
       end
     end
 
-    def footer!
-      repeat(:all, :dynamic => true) do
-        if layout.footer.content
-          bounding_box(
-            [left_position, footer_top_position],
-            :width => layout.content_width,
-            :height => layout.margin.bottom
-          ) do
-            layout.footer.content.call(self)
-          end
+    def content_for_recurring_element(element, options={})
+      return unless element.content
+      bounding_box_on(options) do
+        element.content.call(self)
+      end
+    end
+
+    # Creates a bounding box at a given top position
+    def bounding_box_on(options={})
+      top_position = options.delete(:top)
+      canvas do
+        bounding_box([left_position, top_position.call], options) do
+          yield
         end
       end
     end
@@ -86,7 +83,7 @@ module Kotoba
     end
 
     def layout
-      config.layout_for_page(page_number)
+      config.layout_for_page([0, nil].include?(page_number) ? 1 : page_number)
     end
 
     def book
@@ -95,63 +92,41 @@ module Kotoba
 
     private
 
-    # Returns an Arary with x and y coordinates for the positioning
-    # of the header.
+    # Returns header y coordinate
+    # Should be called from within a Prawn canvas block so it will return the
+    # absolute top of the page rather than the top of its parent bounding_box
     #
-    # @return [Array] An array with x and y coordinates for the header position
-    #                 of the current page.
-    #
-    def header_position
-      [left_position, header_top_position]
-    end
-
-    # Returns the y coordinate for the header. This is calculated using the
-    # page height - the margin of the bounding box at the bottom of the page
-    # This positions the content at the very top of the page.
-    #
-    # @return [Integer] returns the y coordinate for the header
+    # @return [Integer] y coordinate for the header
     #
     def header_top_position
-      layout.page_height - layout.margin.bottom
+      bounds.top
     end
 
-    # Returns an Arary with x and y coordinates for the positioning
-    # of the header.
+    # Returns the footer y coordinate
+    # Should be called from within a Prawn canvas block so it will return the
+    # correct position rather than one based on its parent bounding_box
     #
-    # @return [Array] An array with x and y coordinates for the footer position
-    #                 of the current page.
+    # It takes the absolute bottom of the page and adds the bottom margin to
+    # position the footer correctly
     #
-    def footer_position
-      [left_position, footer_top_position]
-    end
-
-    # Footer top position y coordinate
-    # Always return the Integer 0 as a y coordinate, as that is where the
-    # prawn cursor starts. At the end of the page, at the bottom of the
-    # bounding box.
-    #
-    # @return [Integer] Always returns 0
+    # @return [Integer] y coordinate for the footer
     #
     def footer_top_position
-      0
+      bounds.bottom + layout.margin.bottom
     end
 
-    # Returns the x coordinate that represents the start of the bounding box's
-    # left side. This can differ if different inner and outer margins are
-    # specified for even and odd pages.
-    # Only even pages are really affected. The inner and outer margins are
-    # subtracted from one another and turned into a negative integer. This
-    # specifies how much the cursor should move to the left to match the page's
-    # bounding box left side.
+    # Returns the x position for a content box
+    # Should be called from within a Prawn canvas block so it will return the
+    # correct position based on the absolute left rather than the left of its
+    # parent bounding_box
     #
-    # @return [Integer] returns 0 for odd pages and a negative integer for
-    #                   even pages.
+    # @return [Integer] x coordinate for the content box
     #
     def left_position
       if page_number.even?
-        -(layout.margin.inner - layout.margin.outer)
+        bounds.left + layout.margin.outer
       else
-        0
+        bounds.left + layout.margin.inner
       end
     end
 
