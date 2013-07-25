@@ -83,6 +83,13 @@ module Kotoba
       @code
     end
 
+    # Returns a hash with keys and values that should be given to prawn
+    # on new page creation
+    # It doesn't contain the inner and outer margins as those can differ for
+    # every page, depending if they have odd or even page numbers.
+    #
+    # @return [Hash] hash with prawn values
+    #
     def to_h
       {
         :page_size => page_size,

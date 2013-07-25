@@ -151,15 +151,6 @@ describe Kotoba::Config do
     end
     subject { @config.to_h }
 
-    it "should add layout config" do
-      subject.should include(
-        :page_size => [kind_of(Float), kind_of(Float)],
-        :orientation => :portrait,
-        :top_margin => kind_of(Float),
-        :bottom_margin => kind_of(Float)
-      )
-    end
-
     it "should create a info hash" do
       subject[:info].should include(
         :Title => "My title",

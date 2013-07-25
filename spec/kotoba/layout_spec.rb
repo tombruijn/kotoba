@@ -3,6 +3,27 @@ require "spec_helper"
 describe Kotoba::Layout do
   let(:layout) { Kotoba::Layout.new }
 
+  describe ".to_h" do
+    before do
+      layout.margin.top = 10.cm
+      layout.margin.bottom = 5.cm
+      layout.orientation = :landscape
+      layout.width = 50.cm
+      layout.height = 70.cm
+    end
+    subject { layout.to_h }
+
+    it "should return a layout hash" do
+      subject.should == {
+        :page_size => [50.cm, 70.cm],
+        :size => [50.cm, 70.cm],
+        :orientation => :landscape,
+        :top_margin => 10.cm,
+        :bottom_margin => 5.cm
+      }
+    end
+  end
+
   describe ".page_size" do
     subject { layout.page_size }
 
@@ -257,14 +278,14 @@ describe Kotoba::Layout do
         numbering.active = true
         numbering.string = "Page <page>"
         numbering.align = :right
-        numbering.offset = 2
+        numbering.start_count_at = 2
       end
       subject { numbering }
 
       its(:active) { should be_true }
       its(:string) { should == "Page <page>" }
       its(:align) { should == :right }
-      its(:offset) { should == 2 }
+      its(:start_count_at) { should == 2 }
     end
   end
 end
