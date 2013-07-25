@@ -188,7 +188,70 @@ module Kotoba
         property :active, :default => false # true/false
         property :string, :default => "<page>" # page <page> of <total>
         property :align, :default => :center # left, center, right, position
-        property :offset, :default => 1
+        property :start_count_at, :default => 0
+        property :document_page_number, :default => 0
+        property :document_page_count, :default => 0
+        property :_current_page_number, :default => 0
+
+        # Creates a string with the current page number and page count based on
+        # the string set by the user.
+        #
+        # Example:
+        #
+        #     p = PageNumbering.new
+        #     p.string = "Page <page> of <total>"
+        #     p.document_page_number = 1
+        #     p.document_page_count = 2
+        #     p.format # => "Page 1 of 2"
+        #
+        # @return [String] formatted string with page number and/or count
+        #
+        def format
+          string.
+            gsub("<page>", calculate_page_number.to_s).
+            gsub("<total>", calculate_page_count.to_s)
+        end
+
+        protected
+
+        # Calculates the page number of the current page
+        # If start_count_at is set in the configuration it ignores the actual
+        # page numbering system from the document and instead counts it using
+        # its own.
+        #
+        # @return [Integer] current page number
+        #
+        def calculate_page_number
+          if start_count_at.zero?
+            # Using the real page numbers
+            document_page_number
+          else
+            # Using our own page numbering count
+            if _current_page_number.zero?
+              # First page of this numbering starts at the given number
+              _current_page_number = start_count_at
+            else
+              # Increment the page number
+              _current_page_number += 1
+            end
+          end
+        end
+
+        # Calculates and returns the page count of the document
+        # If start_count_at is set in the configuration it subtracts that
+        # number from the total page count known.
+        #
+        # @return [Integer] total page count based on
+        #
+        def calculate_page_count
+          if start_count_at.zero?
+            # Using the real page numbers
+            document_page_count
+           else
+            # Using our own page numbering count
+            document_page_count - start_count_at
+          end
+        end
       end
     end
 

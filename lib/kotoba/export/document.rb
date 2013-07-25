@@ -46,11 +46,26 @@ module Kotoba
           element = element_layout.footer
         end
 
+        numbering_for_recurring_element(element,
+          :top => top_position,
+          :width => element_layout.content_width,
+          :height => element_height
+        )
         content_for_recurring_element(element,
           :top => top_position,
           :width => element_layout.content_width,
           :height => element_height
         )
+      end
+    end
+
+    def numbering_for_recurring_element(element, options={})
+      numbering = element.numbering
+      return unless numbering.active
+      numbering.document_page_count = page_count
+      bounding_box_on(options) do
+        numbering.document_page_number = page_number
+        text numbering.format, :align => numbering.align
       end
     end
 
