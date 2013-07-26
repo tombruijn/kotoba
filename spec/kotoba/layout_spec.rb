@@ -303,54 +303,6 @@ describe Kotoba::Layout do
           it { should == "Page 1 of <total>" }
         end
       end
-
-      describe ".calculate_page_number" do
-        subject { numbering.send(:calculate_page_number, 4) }
-
-        context "with page numbers based on start_count_at" do
-          before do
-            numbering.start_count_at = 5
-          end
-
-          it "should start numbering with the start_count_at value" do
-            subject.should == 8
-          end
-        end
-
-        context "with prawn page numbers" do
-          before do
-            numbering.start_count_at = 0
-          end
-
-          it "should not modify the page numbers" do
-            subject.should == 4
-          end
-        end
-      end
-
-      describe ".calculate_page_count" do
-        subject { numbering.send(:calculate_page_count, 6) }
-
-        context "with page count based on start_count_at" do
-          before do
-            numbering.start_count_at = 4
-          end
-
-          it "should take into account the start_count_at value" do
-            subject.should == 9
-          end
-        end
-
-        context "with prawn page numbers" do
-          before do
-            numbering.start_count_at = 0
-          end
-
-          it "should not modify the page count" do
-            subject.should == 6
-          end
-        end
-      end
     end
   end
 end

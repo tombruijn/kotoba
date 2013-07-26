@@ -213,48 +213,9 @@ module Kotoba
         #
         def format(page_number, page_count=nil)
           formatted_string = string.dup
-          formatted_string.
-            gsub!("<page>", calculate_page_number(page_number).to_s)
-          if page_count
-            formatted_string.
-              gsub!("<total>", calculate_page_number(page_count).to_s)
-          end
+          formatted_string.gsub!("<page>", page_number.to_s)
+          formatted_string.gsub!("<total>", page_count.to_s) if page_count
           formatted_string
-        end
-
-        protected
-
-        # Calculates the page number of the current page
-        # If start_count_at is set in the configuration it ignores the actual
-        # page numbering system from the document and instead calulates it using
-        # its own.
-        #
-        # @return [Integer] current page number
-        #
-        def calculate_page_number(page_number)
-          if start_count_at.zero?
-            # Using the real page numbers
-            page_number
-          else
-            # Using our own page numbering count
-            page_number + start_count_at - 1
-          end
-        end
-
-        # Calculates and returns the page count of the document
-        # If start_count_at is set in the configuration it calculates it
-        # starting with that number.
-        #
-        # @return [Integer] total page count based on
-        #
-        def calculate_page_count(page_count)
-          if start_count_at.zero?
-            # Using the real page numbers
-            page_count
-          else
-            # Using our own page numbering offset
-            page_count + start_count_at - 1
-          end
         end
       end
     end
