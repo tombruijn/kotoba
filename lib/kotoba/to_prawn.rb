@@ -1,6 +1,8 @@
 module MaRuKu::Out::Prawn
   # Prawn document, is called to add content
   attr_reader :prawn
+  # Integer value that counts the number of paragraphs in one section
+  # @see to_paragraph
   attr_reader :paragraph_count
 
   # Reads the interpreted markdown and writes text/elements as configured in the
@@ -58,15 +60,14 @@ module MaRuKu::Out::Prawn
 
   # Adds the given paragraph to the prawn document
   # with the configured layout for the current page.
-  #
-  # @todo @paragraph_count for book indent?
+  # Counts the number of paragraphs and applies 'book indenting' on the first
+  # paragraph if the configuration is active.
   #
   # @param paragraph [MaRuKu::MDElement] element with paragraph data
   #
   def to_prawn_paragraph(paragraph)
     @paragraph_count += 1
     options = options_for_paragraph(@paragraph_count)
-
     prawn.text to_text(paragraph.children), options
   end
 
@@ -102,7 +103,9 @@ module MaRuKu::Out::Prawn
   end
 
   def to_prawn_ol(ol)
-    # prawn.text "ol"
+    ol.children.each do |li|
+      prawn.text "- #{to_text(li.children)}"
+    end
   end
 
   def to_prawn_ul(ul)
@@ -207,15 +210,22 @@ module MaRuKu::Out::Prawn
     element
   end
 
-  def layout_for(element, selector = nil)
+  # Returns the layout configuration for a specific element type
+  #
+  # @param element [Symbol] element type
+  # @param selector [Object] sub selector for type (e.g. 1 for heading level 1)
+  # @return [Object] a Kotoba::Layout subclass
+  #
+  def layout_for(element, selector=nil)
+    layout = prawn.config.layout_for_page(prawn.page_number)
     if selector
-      prawn.config.layout_for_page(prawn.page_number).send(element, selector)
+      layout.send(element, selector)
     else
-      prawn.config.layout_for_page(prawn.page_number).send(element)
+      layout.send(element)
     end
   end
 
-  def options_for(element, selector = nil)
+  def options_for(element, selector=nil)
     options = layout_for(element, selector).to_hash
     options.merge(:inline_format => true)
   end
