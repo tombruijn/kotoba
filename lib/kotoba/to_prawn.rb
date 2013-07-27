@@ -1,12 +1,34 @@
 module MaRuKu::Out::Prawn
-  attr_reader :prawn, :paragraph_count
+  # Prawn document, is called to add content
+  attr_reader :prawn
+  attr_reader :paragraph_count
 
+  # Reads the interpreted markdown and writes text/elements as configured in the
+  # layout for the current page.
+  #
+  # @param prawn [Prawn::Document] document the markdown should be added to
+  #
   def to_prawn(prawn)
     @prawn = prawn
     @paragraph_count = 0
     array_to_prawn(@children)
   end
 
+  # Loops through maruku elements and calls to_prawn_* methods based on which
+  # markdown element they are. If an element is a string it added to the end
+  # result. If it is an unknown/unsupported type it adds nothing to the result.
+  #
+  # @example
+  #   element = MaRuKu::MDElement.new (node_type => :header)
+  #   array_to_prawn([element])
+  #
+  #   # => will call to_prawn_header(element)
+  #
+  # @todo The result array functionality should be added to to(_filtered)_text
+  # @param array [Array] array of maruku elements
+  # @return [Array] array of strings (Would only rely on the result if
+  #  an array of only strings is given. Prawn is meant to enter it.)
+  #
   def array_to_prawn(array)
     result = []
     array.each do |element|
@@ -23,10 +45,24 @@ module MaRuKu::Out::Prawn
     result
   end
 
-  def to_text(elements)
-    array_to_prawn(elements).join("")
+  # Converts HTML entities to their original entities.
+  # To counter act a side effect of Maruku which prepares to generate HTML with
+  # HTML entities &quot; etc.
+  #
+  # @param entity [MaRuKu::MDElement] entity element for special entities
+  #
+  def to_prawn_entity(entity)
+    html = entity.to_html_entity
+    HTMLEntities.new.decode(html)
   end
 
+  # Adds the given paragraph to the prawn document
+  # with the configured layout for the current page.
+  #
+  # @todo @paragraph_count for book indent?
+  #
+  # @param paragraph [MaRuKu::MDElement] element with paragraph data
+  #
   def to_prawn_paragraph(paragraph)
     @paragraph_count += 1
     options = options_for_paragraph(@paragraph_count)
@@ -34,17 +70,13 @@ module MaRuKu::Out::Prawn
     prawn.text to_text(paragraph.children), options
   end
 
-  def to_prawn_entity(entity)
-    html = entity.to_html_entity
-    decoded = HTMLEntities.new.decode(html)
-    decoded
-  end
-
   # Adds text to the prawn document styled as a heading
   # It uses the styling for the selected heading level
   #
   # The heading is also saved in the headings list
   # to build an PDF outline and Table of Contents later on
+  #
+  # @param header [MaRuKu::MDElement] header element
   #
   def to_prawn_header(header)
     options = options_for(:heading, header.level)
@@ -85,6 +117,12 @@ module MaRuKu::Out::Prawn
     # prawn.text "<quote>#{quote}</quote>"
   end
 
+  # Adds a horizontal rule on the current position of the prawn cursor.
+  #
+  # @todo Add styling functionality.
+  #
+  # @param hrule [MaRuKu::MDElement] horizontal rule element
+  #
   def to_prawn_hrule(hrule = nil)
     prawn.stroke_horizontal_rule
   end
@@ -102,10 +140,20 @@ module MaRuKu::Out::Prawn
     # prawn.text link.to_html
   end
 
+  # Adds text with emphasis.
+  # Uses prawn's inline formatting.
+  #
+  # @param e [MaRuKu::MDElement] emphasis element
+  #
   def to_prawn_emphasis(e)
     "<i>#{to_text(e.children)}</i>"
   end
 
+  # Adds bold text.
+  # Uses prawn's inline formatting.
+  #
+  # @param e [MaRuKu::MDElement] bold text element
+  #
   def to_prawn_strong(e)
     "<b>#{to_text(e.children)}</b>"
   end
@@ -119,6 +167,13 @@ module MaRuKu::Out::Prawn
   end
 
   protected
+
+  # @param elements [Array] Array of objects that listen to a .to_s call
+  # @return [String] joined string of elements
+  #
+  def to_text(elements)
+    array_to_prawn(elements).join("")
+  end
 
   # Finds the parent heading for the given level
   # Will move up the tree to find the parent of the heading level

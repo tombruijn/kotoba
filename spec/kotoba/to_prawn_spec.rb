@@ -69,7 +69,7 @@ describe MaRuKu::Out::Prawn do
   end
 
   describe ".to_text" do
-    subject { out.to_text(["a", "2"]) }
+    subject { out.send(:to_text, ["a", "2"]) }
 
     it "should combine join the elements" do
       should == "a2"
