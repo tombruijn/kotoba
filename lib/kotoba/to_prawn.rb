@@ -106,7 +106,9 @@ module MaRuKu::Out::Prawn
   end
 
   def to_prawn_ul(ul)
-    # prawn.text "ul"
+    ul.children.each do |li|
+      prawn.text "- #{to_text(li.children)}"
+    end
   end
 
   def to_prawn_code(code)

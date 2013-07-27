@@ -231,7 +231,16 @@ describe MaRuKu::Out::Prawn do
     end
 
     pending ".to_prawn_ol"
-    pending ".to_prawn_li"
+    describe ".to_prawn_ul" do
+      let(:text) { "\n- one\n- two\n- three\n" }
+
+      it "should every list item" do
+        subject.should_receive(:text).with("- one")
+        subject.should_receive(:text).with("- two")
+        subject.should_receive(:text).with("- three")
+      end
+    end
+
     pending ".to_prawn_code"
     pending ".to_prawn_quote"
     pending ".to_prawn_ref_definition"
