@@ -252,12 +252,23 @@ describe Kotoba::Document do
   end
 end
 
+# Renders and reads the document
+#
+# @param [Prawn::Document]
+#
+def read_document(document)
+  StringIO.new(document.render, "r+")
+end
+
 # Renders the Prawn document to a PDF which is then read to extract
 # details about the end result
 #
-def render_and_find_objects(document)
-  output = StringIO.new(document.render, "r+")
-  hash = PDF::Reader::ObjectHash.new(output)
+# @param document [Prawn::Document]
+# @return [PDF::Reader::ObjectHash] PDF as an object
+#
+def find_objects(document)
+  string = read_document(document)
+  PDF::Reader::ObjectHash.new(string)
 end
 
 # Outline titles are stored as UTF-16. This method accepts a UTF-8 outline title
@@ -265,7 +276,7 @@ end
 # https://github.com/prawnpdf/prawn/blob/master/spec/outline_spec.rb#L410
 #
 def find_chapter_by_title(document, title)
-  hash = render_and_find_objects(document)
+  hash = find_objects(document)
   hash.values.select do |o|
     if o.is_a?(Hash) && o[:Title]
       title_codepoints = o[:Title].unpack("n*")
