@@ -43,6 +43,25 @@ describe Kotoba::Layout do
     end
   end
 
+  describe "page size methods" do
+    context "custom size" do
+      before do
+        layout.width = 50.cm
+        layout.height = 100.cm
+      end
+
+      it { layout.page_width.should == 50.cm }
+      it { layout.page_height.should == 100.cm }
+    end
+
+    context "prawn size" do
+      before { layout.size = "A5" }
+
+      it { layout.page_width.should == 419.53 }
+      it { layout.page_height.should == 595.28 }
+    end
+  end
+
   describe ".array_page_sizes" do
     subject { layout.send(:array_page_sizes) }
 
