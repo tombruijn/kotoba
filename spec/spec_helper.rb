@@ -12,6 +12,8 @@ require "kotoba"
 require "kotoba/cli"
 require "pry"
 require "fileutils"
+require "pdf/reader"
+require "pdf/inspector"
 
 TMP_DIR = File.join(Kotoba::LIB_DIR, "spec", "tmp")
 

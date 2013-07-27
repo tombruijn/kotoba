@@ -21,19 +21,26 @@ describe MaRuKu::Out::Prawn do
       out.should_receive(:array_to_prawn).with(kind_of(Array))
       out.to_prawn(prawn)
     end
+
+    context "render" do
+      let(:text) { "test string for render" }
+
+      it "should render them" do
+        out.to_prawn(prawn)
+        first_page = PDF::Inspector::Page.analyze(prawn.render).pages.first
+        first_page[:strings].should include "test string for render"
+      end
+    end
   end
 
   describe ".array_to_prawn" do
-    let(:prawn) { mock(:text => nil) }
-    before do
-      out.stub(:options_for => {})
-    end
+    before { out.stub(:options_for => {}) }
     subject { out.array_to_prawn(array) }
 
     context "with strings" do
       let(:array) { ["i ", "am ", "a ", "string"] }
 
-      it "should so nothing with strings" do
+      it "should do nothing with strings" do
         should == array
       end
     end
@@ -130,12 +137,10 @@ describe MaRuKu::Out::Prawn do
 
     describe ".to_prawn_paragraph" do
       let :paragraph_one do
-        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do"\
-        "eiusmod incididunt ut labore et dolore magna aliqua."
+        "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do"
       end
       let :paragraph_two do
-        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui"\
-        "officia deserunt mollit anim id est laborum."
+        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui"
       end
       let :text do
         "#{paragraph_one}\n\n#{paragraph_two}"
