@@ -61,10 +61,6 @@ describe Kotoba::Cli do
     end
   end
 
-  describe "server" do
-    pending
-  end
-
   describe "help" do
     it "description" do
       pending

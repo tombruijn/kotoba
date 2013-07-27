@@ -34,10 +34,5 @@ module Kotoba
 
       Kotoba.export
     end
-
-    desc "server", "Start up Kotoba server for your project"
-    def server
-      say "Sorry, not available yet"
-    end
   end
 end

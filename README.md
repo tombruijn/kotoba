@@ -83,7 +83,7 @@ It will place the export result into this directory when it is done.
 - Generate a Table of Contents.
 - Customize the layout and styling of your book.
 - Add your own fonts to the PDF export.
-- Kotoba server  
+- Kotoba server (might be moved into its own gem)  
   The server will allow for more easy browsing through your book using the
   metadata you can add to the markdown files.
   - A simple overview of all chapters.
