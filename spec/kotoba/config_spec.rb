@@ -78,6 +78,24 @@ describe Kotoba::Config do
     end
   end
 
+  describe ".layout_for_page" do
+    let(:config) { Kotoba::Config.new }
+    let!(:first_layout) { config.layout_for(1) { |l| l.size = "A3" } }
+    let!(:default_layout) { config.layout { |l| l.size = "A4" } }
+
+    context "without specific layout specified for page" do
+      it "should return the default layout" do
+        config.layout_for_page(2).should == default_layout
+      end
+    end
+
+    context "with specific layout specified for page" do
+      it "should return the specific layout" do
+        config.layout_for_page(1).should == first_layout
+      end
+    end
+  end
+
   describe ".load" do
     context "with properly setup structure" do
       before :all do
@@ -102,12 +120,14 @@ describe Kotoba::Config do
   end
 
   describe ".check_requirements" do
-    let(:config) { Kotoba::Config.new(:filename => nil) }
+    let(:config) { Kotoba::Config.new }
 
     it "should check required configuration keys" do
       expect {
+        config.filename = nil
         config.check_requirements
-      }.to raise_error
+      }.to raise_error(Exception, "Configuration keys "\
+        "\"filename\" are not set.")
     end
   end
 
@@ -124,6 +144,11 @@ describe Kotoba::Config do
       end
     end
     subject { Kotoba.config.exporters }
+
+    it "should return an exporter" do
+      subject.first.should be_kind_of Kotoba::Export::Base
+      subject.first.should be_instance_of Kotoba::Export::Pdf
+    end
 
     it "should take defaults for exporters" do
       subject.first.filename.should == "my-test-book"

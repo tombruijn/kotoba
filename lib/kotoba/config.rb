@@ -20,7 +20,7 @@ module Kotoba
       @encoding = "UTF-8"
       @filename = ""
       @exporters = []
-      @layout_for = Hash.new{ |hash, key|
+      @layout_for = Hash.new { |hash, key|
         hash[key] = Layout.new(page_range: key)
       }
     end
@@ -94,6 +94,10 @@ module Kotoba
       @exporters << exporter
     end
 
+    # Checks the required configuration and throws an error if it is incomplete
+    #
+    # @raise [Exception] exception with message of keys that are not set
+    #
     def check_requirements
       invalid_keys = []
       REQUIRED_CONFIG.each do |key|
