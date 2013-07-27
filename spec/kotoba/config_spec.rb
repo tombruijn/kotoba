@@ -161,5 +161,7 @@ describe Kotoba::Config do
         :Producer => "Kotoba"
       )
     end
+
+    pending "should add custom metdata set by user"
   end
 end

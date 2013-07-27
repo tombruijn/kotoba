@@ -1,4 +1,5 @@
 coverage
+rdoc
 .rspec
 Gemfile.lock
 spec/tmp

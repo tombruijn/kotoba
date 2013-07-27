@@ -21,6 +21,12 @@ module Kotoba
       @code = Styling.new(page_range)
     end
 
+    # Returns prawn ready page size value
+    # Can be either an array with custom sizes or a Prawn predefined size
+    # @see: prawnpdf/prawn/blob/master/lib/prawn/document/page_geometry.rb
+    #
+    # @return [Array/String] Prawn compatible size value
+    #
     def page_size
       if width > 0 && height > 0
         [width, height]
@@ -29,16 +35,25 @@ module Kotoba
       end
     end
 
+    # @return [Float] width of the page in PDF points
+    #
     def page_width
       width, height = array_page_sizes
       width
     end
 
+    # @return [Float] height of the page in PDF points
+    #
     def page_height
       width, height = array_page_sizes
       height
     end
 
+    # Returns the width of the page's content
+    # The content area is the size of page minus its inner and outer margins
+    #
+    # @return [Float] width of the content area/bounding box
+    #
     def content_width
       page_width - margin.inner - margin.outer
     end
@@ -200,14 +215,14 @@ module Kotoba
         # Creates a string with the current page number and page count based on
         # the string set by the user.
         #
-        # Example:
-        #
+        # @example
         #     p = PageNumbering.new
         #     p.string = "Page <page> of <total>"
         #     p.format(1, 2) # => "Page 1 of 2"
         #
-        # @param [Integer] Page number, used to replace <page>
-        # @param [Integer] (Optional) Total page count, used to replace <total>
+        # @param page_number [Integer] Page number, used to replace <page>
+        # @param page_count [Integer] Total page count, used to
+        #  replace <total>
         #
         # @return [String] formatted string with page number and/or count
         #
@@ -222,6 +237,12 @@ module Kotoba
 
     protected
 
+    # Returns an array with width and height values of the page
+    # Asks prawn for the width and height if a prawn default size is used
+    #
+    # @return [Array] array with floats that represent the width and height of
+    #  the page
+    #
     def array_page_sizes
       if page_size.is_a?(Array)
         page_size

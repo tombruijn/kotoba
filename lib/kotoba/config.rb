@@ -20,31 +20,16 @@ module Kotoba
       @encoding = "UTF-8"
       @filename = ""
       @exporters = []
-      @layout_for = Hash.new { |hash, key| hash[key] = Layout.new(page_range: key)}
+      @layout_for = Hash.new{ |hash, key|
+        hash[key] = Layout.new(page_range: key)
+      }
     end
 
-    def layout
-      yield(layout_for) if block_given?
-      layout_for
-    end
-
-    def layout_for(page_range = :all)
-      yield(@layout_for[page_range]) if block_given?
-      @layout_for[page_range]
-    end
-
-    def layout_key_for_page(page_number)
-      @layout_for.each_key do |key|
-        return key if Array(key).include?(page_number)
-      end
-      return :all
-    end
-
-    def layout_for_page(page_number)
-      page_range = layout_key_for_page(page_number)
-      @layout_for[page_range]
-    end
-
+    # Loads a Kotoba configuration file.
+    # Checks requirements and exits when the given config file is not found
+    #
+    # @param config_file [String] path to file. Defaults to APP_DIR + config.rb
+    #
     def load(config_file = nil)
       config_file ||= File.join(APP_DIR, "config.rb")
       if File.exists? config_file
@@ -56,6 +41,53 @@ module Kotoba
       end
     end
 
+    # Allows for configuration and retrieval of the default page layout.
+    #
+    # @see layout_for
+    #
+    # @yield [Kotoba::Layout] default layout object for configuration
+    # @return [Kotoba::Layout] default layout object
+    #
+    def layout
+      yield(layout_for) if block_given?
+      layout_for
+    end
+
+    # Allows for configuration and retrieval of a page layout.
+    # Page range should be a Range, Integer or Symbol.
+    #
+    # If given a block it will pass the layout object which can be used to set
+    # configuration details.
+    #
+    # @param page_range [Object] Range, Integer or Symbol
+    # @yield [Kotoba::Layout] default layout object for configuration
+    # @return [Kotoba::Layout] layout object
+    #
+    def layout_for(page_range = :default)
+      yield(@layout_for[page_range]) if block_given?
+      @layout_for[page_range]
+    end
+
+    # Returns the page layout configuration for a page.
+    # Used for retrieval of a layout of a specific page, no ranges or dynamic
+    # selectors.
+    #
+    # @param page_number [Integer] Range, Integer or Symbol
+    # @return [Kotoba::Layout] layout object
+    #
+    def layout_for_page(page_number)
+      page_range = layout_key_for_page(page_number)
+      @layout_for[page_range]
+    end
+
+    # Adds an exporter to the exporters list.
+    # If a block is given it will pass the exporter to that block so it can be
+    # configured.
+    #
+    # @param export_type [String/Symbol] name of the exporter
+    # @yield [Kotoba::Export::Base] selected exporter for configuration
+    # @return [Kotoba::Export::Base] selector exporter
+    #
     def export_to(export_type, &block)
       exporter = Kotoba::Export::Base.get(export_type).new(&block)
       exporter.setup if exporter.respond_to?(:setup)
@@ -74,6 +106,10 @@ module Kotoba
       end
     end
 
+    # Returns a hash with metadata that will be set in the PDF by Prawn.
+    #
+    # @return [Hash] Hash with prawn metadata
+    #
     def to_h
       hash = { :CreationDate => Time.now }
       hash[:Title] = title if title
@@ -86,6 +122,18 @@ module Kotoba
     end
 
     protected
+
+    # Get the key used to define the layout of the given page number.
+    # If no specific layout is found it uses the default layout.
+    #
+    # @return [Object] selector for layout, can be a symbol, range, Integer, etc
+    #
+    def layout_key_for_page(page_number)
+      @layout_for.each_key do |key|
+        return key if Array(key).include?(page_number)
+      end
+      return :default
+    end
 
     def valid_key(key)
       !(self.send(key).nil? || self.send(key).empty? || self.send(key).nil?)
