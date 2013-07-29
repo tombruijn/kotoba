@@ -160,33 +160,4 @@ describe Kotoba::Config do
       subject.last.extension.should == "world"
     end
   end
-
-  describe ".to_h" do
-    before :all do
-      @config = Kotoba::Config.new
-      @config.title = "My title"
-      @config.authors = ["Jim", "Jane"]
-      @config.subject = "A test book"
-      @config.keywords = "test book pdf"
-      @config.creator = "Me!"
-      @config.layout do |l|
-        l.width = 1.0
-        l.height = 2.0
-      end
-    end
-    subject { @config.to_h }
-
-    it "should create a info hash" do
-      subject[:info].should include(
-        :Title => "My title",
-        :Author => "Jim, Jane",
-        :Subject => "A test book",
-        :Keywords => "test book pdf",
-        :Creator => "Me!",
-        :Producer => "Kotoba"
-      )
-    end
-
-    pending "should add custom metdata set by user"
-  end
 end

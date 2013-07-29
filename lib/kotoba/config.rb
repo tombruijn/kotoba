@@ -112,6 +112,7 @@ module Kotoba
 
     # Returns a hash with metadata that will be set in the PDF by Prawn.
     #
+    # @todo Bug for producer key? Have to set it twice?
     # @return [Hash] Hash with prawn metadata
     #
     def to_h
@@ -121,7 +122,10 @@ module Kotoba
       hash[:Subject] = subject if subject
       hash[:Keywords] = keywords if keywords
       hash[:Creator] = creator if creator
-      hash[:Producer] = producer if producer
+      if producer
+        hash[:Producer] = producer
+        hash["Producer"] = producer
+      end
       {:info => hash}
     end
 

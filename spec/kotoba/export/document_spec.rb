@@ -288,6 +288,35 @@ describe Kotoba::Document do
     end
   end
 
+  describe "metadata" do
+    let(:document) { Kotoba::Document.new(Kotoba.config.to_h) }
+    before do
+      Time.stub(:now => "stubbed time")
+      Kotoba.config do |c|
+        c.title = "Test title"
+        c.subject = "Test subject"
+        c.keywords = "Test keywords"
+        c.creator = "The creator"
+        c.authors = ["Tom de Bruijn", "John Doe"]
+      end
+      reader = read_document(document)
+      @metadata = PDF::Reader.new(reader).info
+    end
+    subject { @metadata }
+
+    it "should add standard values" do
+      subject[:CreationDate].should == "stubbed time"
+      subject[:Title].should == "Test title"
+      subject[:Subject].should == "Test subject"
+      subject[:Keywords].should == "Test keywords"
+      subject[:Creator].should == "The creator"
+      subject[:Author].should == "Tom de Bruijn, John Doe"
+      subject[:Producer].should == "Kotoba"
+    end
+
+    pending "should add custom data"
+  end
+
   describe "document outline" do
     let(:headings) do
       [
