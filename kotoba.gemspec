@@ -7,8 +7,10 @@ Gem::Specification.new do |gem|
   gem.email         = [
     "tom@tomdebruijn.com"
   ]
-  gem.description   = "Book manager in Ruby for Markdown files. Exports to PDF."
-  gem.summary       = "Book manager in Ruby for Markdown files. Exports to PDF."
+  gem.description   = "Book manager in Ruby for Markdown files. Exports to "\
+                      "PDF through PrawnPDF."
+  gem.summary       = "Book manager in Ruby for Markdown files. Exports to "\
+                      "PDF through PrawnPDF."
   gem.homepage      = "http://github.com/tombruijn/kotoba"
   gem.license       = "MIT"
 
