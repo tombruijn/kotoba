@@ -32,7 +32,6 @@ describe Kotoba::Export::Pdf do
     let(:exporter) { Kotoba::Export::Pdf.new }
     let(:template) { Kotoba::Template.new("a file", "source of a file") }
     before do
-      exporter.should_receive(:prawn_options).and_return({})
       book = Kotoba::Book.new
       book.instance_variable_set("@templates", [template])
       Kotoba.should_receive(:book).and_return(book)
@@ -67,24 +66,7 @@ describe Kotoba::Export::Pdf do
   end
 
   describe ".export" do
-    pending "book data" do
-      before do
-        parser = Kotoba::Parser.new
-        Kotoba::Parser.should_receive(:new).and_return(parser)
-        parser.should_receive(:files).
-          and_return(
-            [File.join(Kotoba::BOOK_DIR, "chapters", "chapter_1", "markdown.md")
-          ])
-      end
-
-      it "should move cursor between chapters sections" do
-        pending
-      end
-
-      after { @exporter.export }
-    end
-
-    context "build" do
+    describe "build" do
       before :all do
         clear_tmp_directory
         Kotoba::Export::Base.prepare_build_directory

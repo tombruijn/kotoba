@@ -5,7 +5,7 @@ module Kotoba
     def initialize(options={}, &block)
       @sections = []
       @headings = []
-      super(page_options.merge(options), &block)
+      super(page_options.merge(config.to_h).merge(options), &block)
     end
 
     # Starts a new page in the Prawn document

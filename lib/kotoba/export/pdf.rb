@@ -4,7 +4,7 @@ module Kotoba
   module Export
     class Pdf < Base
       def export
-        Document.generate(file, prawn_options) do |prawn|
+        Document.generate(file) do |prawn|
           prawn.book.templates.each do |template|
             # Create new page on new chapter
             if config.chapter_on_new_page && new_chapter?(template)
@@ -29,10 +29,6 @@ module Kotoba
           # PDF navigation
           prawn.outline!
         end
-      end
-
-      def prawn_options
-        config.to_h
       end
 
       def extension
