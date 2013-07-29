@@ -102,12 +102,22 @@ module MaRuKu::Out::Prawn
     @last_heading = heading
   end
 
+  # Adds an ordered list
+  #
+  # @param ol [MaRuKu::MDElement] ordered list element
+  #
   def to_prawn_ol(ol)
+    @li_i = 0
     ol.children.each do |li|
-      prawn.text "- #{to_text(li.children)}"
+      @li_i += 1
+      prawn.text "#{@li_i}. #{to_text(li.children)}"
     end
   end
 
+  # Adds an unordered list
+  #
+  # @param ul [MaRuKu::MDElement] unordered list element
+  #
   def to_prawn_ul(ul)
     ul.children.each do |li|
       prawn.text "- #{to_text(li.children)}"
