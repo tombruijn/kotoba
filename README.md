@@ -107,17 +107,28 @@ work.
 require "kotoba"
 
 Kotoba.config do |config|
-  # Declare the title of your book
-  # This will be set in the PDF
+  # Set the title of your book
   config.title = "Preview book"
+  # Subject
+  config.subject = "Subject of preview book"
   # List the authors of the book
   config.authors = ["Tom de Bruijn"]
+  # Keywords
+  config.keywords = "preview book prawn pdf kotoba"
+  # Creator
+  config.creator = "Creator of this book"
+  # Producer
+  config.producer = "Kotoba using Prawn"
+  # Custom metadata
+  config.metadata = {
+    :Foo => "Bar"
+  }
+
   # Declare the filename you wish to have it export to
   config.filename = "preview-book"
 
   # Declare which exports to use
   config.export_to :pdf
-  config.export_to :text
 
   # Define the default style (optional)
   config.layout do |l|

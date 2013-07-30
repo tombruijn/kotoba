@@ -212,7 +212,7 @@ describe Kotoba::Document do
     end
   end
 
-  describe "layout" do
+  describe "page size" do
     before do
       Kotoba.clear_config!
       Kotoba.config do |c|
@@ -314,7 +314,11 @@ describe Kotoba::Document do
       subject[:Producer].should == "Kotoba"
     end
 
-    pending "should add custom data"
+    context "with custom metadata" do
+      before(:all) { Kotoba.config.metadata = {:Grok => "Test property"} }
+
+      its([:Grok]) { should == "Test property" }
+    end
   end
 
   describe "document outline" do

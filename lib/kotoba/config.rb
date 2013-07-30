@@ -3,7 +3,8 @@ module Kotoba
     REQUIRED_CONFIG = [:filename].freeze
 
     attr_accessor :filename, :encoding, :title, :authors, :subject, :keywords,
-                  :creator, :producer, :support_sections, :chapter_on_new_page
+                  :creator, :producer, :metadata, :support_sections,
+                  :chapter_on_new_page
     attr_reader   :exporters, :layout_for
 
     def initialize
@@ -11,8 +12,9 @@ module Kotoba
       @authors = []
       @subject = ""
       @keywords = ""
-      @creator = ""
+      @creator = "Kotoba"
       @producer = "Kotoba"
+      @metadata = {}
 
       @support_sections = true
       @chapter_on_new_page = true
@@ -116,7 +118,7 @@ module Kotoba
     # @return [Hash] Hash with prawn metadata
     #
     def to_h
-      hash = { :CreationDate => Time.now }
+      hash = metadata.merge(:CreationDate => Time.now)
       hash[:Title] = title if title
       hash[:Author] = authors.join(", ") unless authors.empty?
       hash[:Subject] = subject if subject
