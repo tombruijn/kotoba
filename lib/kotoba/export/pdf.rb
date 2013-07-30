@@ -7,7 +7,7 @@ module Kotoba
         Document.generate(file) do |prawn|
           prawn.book.templates.each do |template|
             # Create new page on new chapter
-            if config.chapter_on_new_page && new_chapter?(template)
+            if prawn.config.chapter_on_new_page && new_chapter?(template)
               prawn.start_new_page
             end
             # Sections support

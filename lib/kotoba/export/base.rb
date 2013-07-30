@@ -48,10 +48,6 @@ module Kotoba
           end
         end
       end
-
-      def config
-        Kotoba.config
-      end
     end
   end
 end
