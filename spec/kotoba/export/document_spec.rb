@@ -336,16 +336,25 @@ describe Kotoba::Document do
       @objects = find_objects(document)
     end
 
-    it "should add a chapter to the outline" do
-      find_chapter_by_title(@objects, "Chapter 1").should_not be_nil
+    it "should add a chapter to the outline root" do
+      chapter_1 = find_chapter_by_title(@objects, "Chapter 1")
+      chapter_1.should_not be_nil
+      outline = find_outline_root(@objects)
+      @objects[chapter_1[:Parent]].should == outline
     end
 
-    it "should add a parent chapter to the outline" do
-      find_chapter_by_title(@objects, "Chapter 2").should_not be_nil
+    it "should add a parent chapter to the outline root" do
+      chapter_2 = find_chapter_by_title(@objects, "Chapter 2")
+      chapter_2.should_not be_nil
+      outline = find_outline_root(@objects)
+      @objects[chapter_2[:Parent]].should == outline
     end
 
-    it "should add nested chapters to the outline" do
-      find_chapter_by_title(@objects, "Chapter 3").should_not be_nil
+    it "should add nested chapters to the outline under their parent" do
+      chapter_3 = find_chapter_by_title(@objects, "Chapter 3")
+      chapter_3.should_not be_nil
+      parent = @objects[chapter_3[:Parent]]
+      parent.should == find_chapter_by_title(@objects, "Chapter 2")
     end
   end
 end
@@ -379,7 +388,17 @@ def find_chapter_by_title(objects, title)
       title_codepoints = o[:Title].unpack("n*")
       title_codepoints.shift
       utf8_title = title_codepoints.pack("U*")
-      utf8_title == title ? o : nil
+      utf8_title == title
     end
-  end
+  end.first
+end
+
+# Finds the outline root from the document
+#
+# @param objects [PDF::Reader::ObjectHash] PDF as an object
+#
+def find_outline_root(objects)
+  objects.values.select do |o|
+    o.is_a?(Hash) && o[:Type] == :Outlines
+  end.first
 end
