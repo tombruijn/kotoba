@@ -322,41 +322,30 @@ describe Kotoba::Document do
   end
 
   describe "document outline" do
-    let(:headings) do
-      [
+    before :all do
+      document = Kotoba::Document.new
+      document.headings = [
         { name: "Chapter 1", page: 1, level: 1, children: [] },
         { name: "Chapter 2", page: 2, level: 1, children: [
             { name: "Chapter 3", page: 3, level: 2, children: [] }
           ]
         }
       ]
-    end
-    before do
-      document.headings = headings
       3.times { document.start_new_page }
+      document.outline!
+      @objects = find_objects(document)
     end
 
-    describe ".outline!" do
-      it "should call outline generation method" do
-        document.should_receive(:outline_chapter_headings).with(kind_of(Array))
-        document.outline!
-      end
+    it "should add a chapter to the outline" do
+      find_chapter_by_title(@objects, "Chapter 1").should_not be_nil
     end
 
-    describe ".outline_chapter_headings" do
-      before { document.send(:outline_chapter_headings, headings) }
+    it "should add a parent chapter to the outline" do
+      find_chapter_by_title(@objects, "Chapter 2").should_not be_nil
+    end
 
-      it "should add a chapter to the outline" do
-        find_chapter_by_title(document, "Chapter 1").should_not be_nil
-      end
-
-      it "should add a parent chapter to the outline" do
-        find_chapter_by_title(document, "Chapter 2").should_not be_nil
-      end
-
-      it "should add nested chapters to the outline" do
-        find_chapter_by_title(document, "Chapter 3").should_not be_nil
-      end
+    it "should add nested chapters to the outline" do
+      find_chapter_by_title(@objects, "Chapter 3").should_not be_nil
     end
   end
 end
@@ -384,9 +373,8 @@ end
 # and returns the PDF Object that contains an outline with that name
 # https://github.com/prawnpdf/prawn/blob/master/spec/outline_spec.rb#L410
 #
-def find_chapter_by_title(document, title)
-  hash = find_objects(document)
-  hash.values.select do |o|
+def find_chapter_by_title(objects, title)
+  objects.values.select do |o|
     if o.is_a?(Hash) && o[:Title]
       title_codepoints = o[:Title].unpack("n*")
       title_codepoints.shift
