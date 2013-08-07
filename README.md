@@ -209,6 +209,10 @@ Kotoba.config do |config|
 end
 ```
 
+## Code status
+
+[![Code Climate](https://codeclimate.com/github/tombruijn/kotoba.png)](https://codeclimate.com/github/tombruijn/kotoba)
+
 ## License
 
 Kotoba released under the MIT License. See the bundled LICENSE file for details.
