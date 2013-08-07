@@ -1,7 +1,7 @@
 require "spec_helper"
 
-describe Kotoba::Document do
-  let(:document) { Kotoba::Document.new(Kotoba.config.to_h) }
+describe Kotoba::Export::Document do
+  let(:document) { Kotoba::Export::Document.new(Kotoba.config.to_h) }
   before do
     Kotoba.config do |c|
       c.layout do |l|
@@ -289,7 +289,7 @@ describe Kotoba::Document do
   end
 
   describe "metadata" do
-    let(:document) { Kotoba::Document.new(Kotoba.config.to_h) }
+    let(:document) { Kotoba::Export::Document.new(Kotoba.config.to_h) }
     before do
       Time.stub(:now => "stubbed time")
       Kotoba.config do |c|
@@ -323,7 +323,7 @@ describe Kotoba::Document do
 
   describe "document outline" do
     before :all do
-      document = Kotoba::Document.new
+      document = Kotoba::Export::Document.new
       document.headings = [
         { name: "Chapter 1", page: 1, level: 1, children: [] },
         { name: "Chapter 2", page: 2, level: 1, children: [

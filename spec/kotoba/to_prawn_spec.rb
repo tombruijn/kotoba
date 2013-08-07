@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe MaRuKu::Out::Prawn do
   let(:text) { "" }
-  let(:prawn) { Kotoba::Document.new }
+  let(:prawn) { Kotoba::Export::Document.new }
   let(:out) { Maruku.new(text) }
 
   describe ".to_prawn" do
