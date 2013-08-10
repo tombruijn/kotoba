@@ -2,20 +2,7 @@ require "spec_helper"
 
 describe Kotoba::Export::Document do
   let(:document) { Kotoba::Export::Document.new(Kotoba.config.to_h) }
-  before :all do
-    Kotoba.config do |c|
-      c.layout do |l|
-        l.width = 10.cm
-        l.height = 20.cm
-        l.margin do |m|
-          m.top = 1.cm
-          m.bottom = 2.cm
-          m.outer = 3.cm
-          m.inner = 4.cm
-        end
-      end
-    end
-  end
+  before(:all) { set_default_config }
 
   describe ".header_top_position" do
     subject { document.send(:header_top_position) }

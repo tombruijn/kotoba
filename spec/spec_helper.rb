@@ -14,6 +14,7 @@ require "pry"
 require "fileutils"
 require "pdf/reader"
 require "pdf/inspector"
+require "support/helpers/pdf_helper"
 
 TMP_DIR = File.join(Kotoba::LIB_DIR, "spec", "tmp")
 
@@ -40,6 +41,21 @@ end
 RSpec.configure do |config|
   config.before(:all) do
     Kotoba.clear_config!
+  end
+end
+
+def set_default_config
+  Kotoba.config do |c|
+    c.layout do |l|
+      l.width = 10.cm
+      l.height = 20.cm
+      l.margin do |m|
+        m.top = 1.cm
+        m.bottom = 2.cm
+        m.outer = 3.cm
+        m.inner = 4.cm
+      end
+    end
   end
 end
 
