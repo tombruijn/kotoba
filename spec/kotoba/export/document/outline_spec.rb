@@ -4,13 +4,9 @@ describe Kotoba::Export::Document do
   describe "document outline" do
     before :all do
       document = Kotoba::Export::Document.new
-      document.headings = [
-        { name: "Chapter 1", page: 1, level: 1, children: [] },
-        { name: "Chapter 2", page: 2, level: 1, children: [
-            { name: "Chapter 3", page: 3, level: 2, children: [] }
-          ]
-        }
-      ]
+      document.register_heading(name: "Chapter 1", page: 1, level: 1)
+      document.register_heading(name: "Chapter 2", page: 2, level: 1)
+      document.register_heading(name: "Chapter 3", page: 3, level: 2)
       3.times { document.start_new_page }
       document.outline!
       @objects = find_objects(document)

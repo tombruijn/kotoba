@@ -83,23 +83,11 @@ module MaRuKu::Out::Prawn
     options = options_for(:heading, header.level)
     prawn.text to_text(header.children), options
 
-    # Save heading so we can build the Table of Contents later on
-    heading = {
+    prawn.register_heading({
       :name => to_text(header.children),
       :level => header.level,
-      :page => prawn.page_count,
-      :children => []
-    }
-    parent = find_parent_heading_for_level(@last_heading, header.level)
-    if parent
-      # Heading is sub heading
-      heading[:parent] = parent
-      parent[:children] << heading
-    else
-      # Heading is root level heading
-      prawn.headings << heading
-    end
-    @last_heading = heading
+      :page => prawn.page_count
+    })
   end
 
   # Adds an ordered list
@@ -188,21 +176,6 @@ module MaRuKu::Out::Prawn
   #
   def to_text(elements)
     array_to_prawn(elements).join("")
-  end
-
-  # Finds the parent heading for the given level
-  # Will move up the tree to find the parent of the heading level
-  # If no parent is found the heading is root
-  #
-  # @return [Hash, nil] the found parent (if any)
-  #
-  def find_parent_heading_for_level(heading, level)
-    return if heading.nil?
-    if heading[:level] == level - 1
-      heading
-    else
-      find_parent_heading_for_level(heading[:parent], level)
-    end
   end
 
   def prawn_inline_formatting_for(element_type, element)

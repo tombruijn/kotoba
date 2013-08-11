@@ -83,56 +83,6 @@ describe MaRuKu::Out::Prawn do
       let(:text) { "# header" }
 
       it { subject.should_receive(:text).with("header", kind_of(Hash)) }
-
-      describe "outline creation" do
-        let(:text) do
-          "# heading 1\n\n## heading 2.1\n\n## heading 2.2\n\n"\
-          "### heading 3\n\n# heading 1"
-        end
-        before { out.to_prawn(prawn) }
-
-        it "should add chapters headings to outline" do
-          heading_1 = subject.headings.first
-          heading_2_1 = heading_1[:children].first
-          heading_2_2 = heading_1[:children].last
-          heading_3 = heading_2_2[:children].first
-          heading_4 = subject.headings.last
-
-          heading_1.should == {
-            name: "heading 1",
-            level: 1,
-            page: 1,
-            children: [heading_2_1, heading_2_2]
-          }
-          heading_2_1.should == {
-            name: "heading 2.1",
-            level: 2,
-            page: 1,
-            children: [],
-            parent: heading_1
-          }
-          heading_2_2.should == {
-            name: "heading 2.2",
-            level: 2,
-            page: 1,
-            children: [heading_3],
-            parent: heading_1
-          }
-          heading_3.should == {
-            name: "heading 3",
-            level: 3,
-            page: 1,
-            children: [],
-            parent: heading_2_2
-          }
-          heading_4.should == {
-            name: "heading 1",
-            level: 1,
-            page: 1,
-            children: []
-          }
-        end
-      end
     end
 
     describe ".to_prawn_paragraph" do

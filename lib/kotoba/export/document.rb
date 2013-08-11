@@ -1,10 +1,11 @@
 module Kotoba::Export
   class Document < Prawn::Document
-    attr_accessor :headings, :sections
+    include Kotoba::Outline
+
+    attr_accessor :sections
 
     def initialize(options={}, &block)
       @sections = []
-      @headings = []
       super(page_options.merge(config.to_h).merge(options), &block)
     end
 
@@ -36,6 +37,13 @@ module Kotoba::Export
         }
       end
       page_options.merge(page_layout.to_h)
+    end
+
+    # Adds an outline to the prawn document.
+    # Makes navigation of the document easier.
+    #
+    def outline!
+      outline_chapter_headings(@headings)
     end
 
     # Returns the current page number.
@@ -83,11 +91,33 @@ module Kotoba::Export
     def book
       Kotoba.book
     end
+
+    protected
+
+    # This method tells Prawn the outline of the document, a table of contents.
+    # Will automatically nest chapters as long as the nesting is
+    # done in advance and nested chapters are stored in the chapter's
+    # children key as an array.
+    #
+    # @param list [Array] array with hashes that represent headings
+    #
+    # @see Kotoba::Outline's register_heading method for heading structure.
+    #
+    def outline_chapter_headings(list)
+      list.each do |heading|
+        if heading[:children].empty?
+          outline.page(:title => heading[:name], :destination => heading[:page])
+        else
+          outline.section(heading[:name], :destination => heading[:page]) do
+            outline_chapter_headings(heading[:children])
+          end
+        end
+      end
+    end
   end
 end
 
 require "kotoba/export/document/layout"
-require "kotoba/export/document/outline"
 require "kotoba/export/document/bounding_box"
 require "kotoba/export/document/recurring_elements"
 require "kotoba/export/document/content"
