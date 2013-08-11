@@ -28,7 +28,8 @@ module Kotoba
     end
 
     # Loads a Kotoba configuration file.
-    # Checks requirements and exits when the given config file is not found
+    # Checks requirements and exits when the given config file is not found.
+    # Exits the program when the given config file is not found.
     #
     # @param config_file [String] path to file. Defaults to APP_DIR + config.rb
     #
