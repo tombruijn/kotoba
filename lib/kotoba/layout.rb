@@ -99,20 +99,30 @@ module Kotoba
     end
 
     # Returns a hash with keys and values that should be given to prawn
-    # on new page creation
-    # It doesn't contain the inner and outer margins as those can differ for
-    # every page, depending if they have odd or even page numbers.
+    # on new page creation.
+    # The left and right margins can differ for every page, depending if they
+    # have odd or even page numbers. This is used for inner and outer margins.
+    #
+    # @param page_number [Integer] page number for which page it should be.
     #
     # @return [Hash] hash with prawn values
     #
-    def to_h
+    def to_h(page_number)
       {
-        :page_size => page_size,
-        :size => page_size,
-        :orientation => orientation,
-        :top_margin => margin.top,
-        :bottom_margin => margin.bottom
-      }
+        page_size: page_size,
+        size: page_size,
+        orientation: orientation,
+        top_margin: margin.top,
+        bottom_margin: margin.bottom
+      }.tap do |hash|
+        if page_number.even?
+          hash[:left_margin] = margin.outer
+          hash[:right_margin] = margin.inner
+        else
+          hash[:left_margin] = margin.inner
+          hash[:right_margin] = margin.outer
+        end
+      end
     end
 
     class Margin < Hashie::Dash

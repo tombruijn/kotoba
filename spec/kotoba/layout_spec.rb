@@ -7,20 +7,34 @@ describe Kotoba::Layout do
     before do
       layout.margin.top = 10.cm
       layout.margin.bottom = 5.cm
+      layout.margin.inner = 6.cm
+      layout.margin.outer = 7.cm
       layout.orientation = :landscape
       layout.width = 50.cm
       layout.height = 70.cm
     end
-    subject { layout.to_h }
+    subject { layout.to_h(1) }
 
     it "should return a layout hash" do
-      subject.should == {
-        :page_size => [50.cm, 70.cm],
-        :size => [50.cm, 70.cm],
-        :orientation => :landscape,
-        :top_margin => 10.cm,
-        :bottom_margin => 5.cm
-      }
+      subject.should include page_size: [50.cm, 70.cm],
+        size: [50.cm, 70.cm],
+        orientation: :landscape,
+        top_margin: 10.cm,
+        bottom_margin: 5.cm
+    end
+
+    context "odd pages" do
+      it "should return a layout hash" do
+        subject.should include left_margin: 6.cm, right_margin: 7.cm
+      end
+    end
+
+    context "even pages" do
+      subject { layout.to_h(2) }
+
+      it "should change inner and outer margins" do
+        subject.should include left_margin: 7.cm, right_margin: 6.cm
+      end
     end
   end
 

@@ -25,18 +25,7 @@ module Kotoba::Export
     def page_options
       page_layout = layout_for_next_page
       current_page_count = page_number || 1
-      page_options = if current_page_count.odd?
-        {
-          :left_margin => page_layout.margin.outer,
-          :right_margin => page_layout.margin.inner
-        }
-      else
-        {
-          :left_margin => page_layout.margin.inner,
-          :right_margin => page_layout.margin.outer
-        }
-      end
-      page_options.merge(page_layout.to_h)
+      page_layout.to_h(current_page_count)
     end
 
     # Adds an outline to the prawn document.
