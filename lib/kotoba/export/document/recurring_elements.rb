@@ -21,23 +21,9 @@ class Kotoba::Export::Document
   # @param element_type [Symbol] name of recurring element (header/footer)
   #
   def add_recurring_element(element_type)
-    element_layout = layout
-    element = element_layout.send(element_type)
-    options = if element_type == :header
-      {
-        :top => Proc.new { header_top_position },
-        :height => element_layout.margin.top
-      }
-    else
-      {
-        :top => Proc.new { footer_top_position },
-        :height => element_layout.margin.bottom
-      }
-    end
-    options.merge!(:width => element_layout.content_width)
-
-    numbering_for_recurring_element(element, options)
-    content_for_recurring_element(element, options)
+    element = layout.send(element_type)
+    numbering_for_recurring_element(element)
+    content_for_recurring_element(element)
   end
 
   # Adds page number to the current page.
@@ -45,15 +31,15 @@ class Kotoba::Export::Document
   #
   # @param element [Kotoba::Layout::RecurringElement] a recurring element
   # @param options [Hash] options that position the content,
-  #                       see bounding_box_on.
+  #                       see bounding_box_for.
   #                       Requires the options :page_number and :page_count
   #                       as well.
   #
-  def numbering_for_recurring_element(element, options={})
+  def numbering_for_recurring_element(element)
     numbering = element.numbering
     return unless numbering.active
     counter = set_page_counter(numbering)
-    bounding_box_on(options) do
+    bounding_box_for(element) do
       text numbering.format(counter[:number], counter[:total]),
         :align => numbering.align
     end
@@ -65,11 +51,11 @@ class Kotoba::Export::Document
   #
   # @param element [Kotoba::Layout::RecurringElement] a recurring element
   # @param options [Hash] options that position the content,
-  #                       see bounding_box_on
+  #                       see bounding_box_for
   #
-  def content_for_recurring_element(element, options={})
+  def content_for_recurring_element(element)
     return unless element.content
-    bounding_box_on(options) do
+    bounding_box_for(element) do
       element.content.call(self)
     end
   end

@@ -10,11 +10,30 @@ class Kotoba::Export::Document
   #                                           :height (number)
   # @yield block that should be called inside the bounding box
   #
-  def bounding_box_on(options={})
+  def bounding_box_for(element)
     canvas do
-      bounding_box([left_position, options[:top].call], options) do
+      options = bounding_box_options_for(element)
+
+      x_coordinate = left_position(element.at[1])
+      y_coordinate = if element.type == :header
+        header_top_position(element.at[0])
+      else
+        footer_top_position(element.at[0])
+      end
+
+      bounding_box([x_coordinate, y_coordinate], options) do
         yield
       end
     end
+  end
+
+  def bounding_box_options_for(element)
+    element_layout = layout
+    height = if element.type == :header
+      element_layout.margin.top
+    else
+      element_layout.margin.bottom
+    end
+    { :width => element_layout.content_width, :height => height }
   end
 end

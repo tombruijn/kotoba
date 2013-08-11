@@ -12,8 +12,8 @@ module Kotoba
     def initialize(args = {})
       super(args)
       @margin = Margin.new
-      @header = RecurringElement.new(page_range)
-      @footer = RecurringElement.new(page_range)
+      @header = RecurringElement.new(page_range, :header)
+      @footer = RecurringElement.new(page_range, :footer)
       @default = DefaultStyling.new(page_range)
       @paragraph = Paragraph.new
       @headings = Hash.new { |hash,i| hash[i] = Styling.new(page_range) }
@@ -188,11 +188,13 @@ module Kotoba
     end
 
     class RecurringElement < Styling
-      attr_reader :numbering
-      attr_accessor :content
+      attr_reader :type, :numbering
+      attr_accessor :content, :at
 
       def initialize(*args)
         super(args)
+        @at = [0, 0]
+        @type = args[1]
         @numbering = PageNumbering.new
       end
 

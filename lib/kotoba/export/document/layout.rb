@@ -5,8 +5,8 @@ class Kotoba::Export::Document
   #
   # @return [Integer] y coordinate for the header
   #
-  def header_top_position
-    bounds.top
+  def header_top_position(padding=0)
+    bounds.top - padding
   end
 
   # Returns the footer y coordinate.
@@ -18,8 +18,8 @@ class Kotoba::Export::Document
   #
   # @return [Integer] y coordinate for the footer
   #
-  def footer_top_position
-    bounds.bottom + layout.margin.bottom
+  def footer_top_position(padding=0)
+    bounds.bottom + layout.margin.bottom - padding
   end
 
   # Returns the x position for a content box.
@@ -29,11 +29,12 @@ class Kotoba::Export::Document
   #
   # @return [Integer] x coordinate for the content box
   #
-  def left_position
-    if page_number.even?
-      bounds.left + layout.margin.outer
+  def left_position(padding)
+    position = if page_number.even?
+      layout.margin.outer
     else
-      bounds.left + layout.margin.inner
+      layout.margin.inner
     end
+    position += bounds.left + padding
   end
 end
