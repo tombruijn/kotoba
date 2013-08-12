@@ -6,7 +6,7 @@ module Kotoba::Export
 
     def initialize(options={}, &block)
       @sections = []
-      super(page_options.merge(config.to_h).merge(options), &block)
+      super(next_page_options.merge(config.to_h).merge(options), &block)
     end
 
     # Starts a new page in the Prawn document
@@ -14,18 +14,17 @@ module Kotoba::Export
     # @see Prawn::Document's start_new_page method
     #
     def start_new_page(options={})
-      super(page_options.merge(options))
+      super(next_page_options.merge(options))
     end
 
-    # Returns a hash with options for page creation.
+    # Returns a hash with options for the next page creation.
     # The values depend on the defined layout for the to be created page.
     #
     # @return [Hash] hash with page options
     #
-    def page_options
-      page_layout = layout_for_next_page
-      current_page_count = page_number || 1
-      page_layout.to_h(current_page_count)
+    def next_page_options
+      page_layout = layout_for(next_page_number)
+      page_layout.to_h(next_page_number)
     end
 
     # Adds an outline to the prawn document.
@@ -46,6 +45,14 @@ module Kotoba::Export
       page_number
     end
 
+    # Returns the next page number.
+    #
+    # @return [Integer] next page number
+    #
+    def next_page_number
+      page_is_first_page? ? 1 : (page_number + 1)
+    end
+
     # Returns a boolean indicating if the current page is the first page
     # or the first to be created page.
     #
@@ -57,20 +64,20 @@ module Kotoba::Export
 
     # Returns the layout for the current page
     #
-    # @return [Kotoba::Layout] the layout specified for the next page
+    # @return [Kotoba::Layout] the layout specified for the next page.
     #
     def layout
-      config.layout_for_page(current_page_number)
+      layout_for(current_page_number)
     end
 
-    # Returns the layout for the next page.
-    # Used for page creation in start_new_page.
+    # Returns the layout for the requested page.
     #
-    # @return [Kotoba::Layout] the layout specified for the next page
+    # @param page_number [Integer] page number for the requested layout.
     #
-    def layout_for_next_page
-      next_page_number = page_is_first_page? ? 1 : (page_number + 1)
-      config.layout_for_page(next_page_number)
+    # @return [Kotoba::Layout] the layout for the specified page.
+    #
+    def layout_for(page_number)
+      config.layout_for_page(page_number)
     end
 
     def config
