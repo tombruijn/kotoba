@@ -200,7 +200,7 @@ module MaRuKu::Out::Prawn
   # @return [Object] a Kotoba::Layout subclass
   #
   def layout_for(element, selector=nil)
-    layout = prawn.config.layout_for_page(prawn.page_number)
+    layout = Kotoba.config.layout_for_page(prawn.page_number)
     if selector
       layout.send(element, selector)
     else

@@ -16,7 +16,7 @@ class Kotoba::Export::Document
   # Adds the parsed book to the document.
   #
   def add_book!
-    book.templates.each do |template|
+    Kotoba.book.templates.each do |template|
       start_new_page if new_chapter?(template)
       add_chapter(template)
     end
@@ -27,7 +27,7 @@ class Kotoba::Export::Document
   # @param template [Kotoba::Template] template to be added
   #
   def add_chapter(template)
-    if config.support_sections
+    if Kotoba.config.support_sections
       parse_and_add_content template.sections
     else
       parse_and_add_content template.source
@@ -56,7 +56,7 @@ class Kotoba::Export::Document
   # @return [Boolean] if template is a new chapter (based on previous calls)
   #
   def new_chapter?(template)
-    return false unless config.chapter_on_new_page
+    return false unless Kotoba.config.chapter_on_new_page
     template_dir = File.dirname(template.file)
     is_new_dir = !(@last_dir.nil? || @last_dir == template_dir)
     @last_dir = template_dir

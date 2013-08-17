@@ -228,7 +228,7 @@ describe MaRuKu::Out::Prawn do
   describe ".wrap_around_prawn_inline_formatting_for" do
     let(:inline_code) { "inline code" }
     before do
-      prawn.config.layout_for(1).code.stub(
+      Kotoba.config.layout_for(1).code.stub(
         :style => [:italic, :bold],
         :color => "FFAE00",
         :font => "My-Font",

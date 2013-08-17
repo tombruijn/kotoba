@@ -3,7 +3,7 @@ module Kotoba::Export
     include Kotoba::Outline
 
     def initialize(options={}, &block)
-      super(next_page_options.merge(config.to_h).merge(options), &block)
+      super(next_page_options.merge(Kotoba.config.to_h).merge(options), &block)
     end
 
     # Starts a new page in the Prawn document
@@ -74,15 +74,7 @@ module Kotoba::Export
     # @return [Kotoba::Layout] the layout for the specified page.
     #
     def layout_for(page_number)
-      config.layout_for_page(page_number)
-    end
-
-    def config
-      Kotoba.config
-    end
-
-    def book
-      Kotoba.book
+      Kotoba.config.layout_for_page(page_number)
     end
 
     protected
