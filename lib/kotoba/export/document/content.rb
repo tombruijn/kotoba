@@ -3,6 +3,8 @@ class Kotoba::Export::Document
 
   def self.generate(filename)
     pdf = Kotoba::Export::Document.new do |prawn|
+      # Add font assets
+      prawn.register_fonts!
       # Add book content
       prawn.add_book!
       # Headers and footers

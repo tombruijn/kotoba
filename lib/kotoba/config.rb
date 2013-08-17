@@ -4,7 +4,7 @@ module Kotoba
 
     attr_accessor :filename, :encoding, :title, :authors, :subject, :keywords,
                   :creator, :producer, :metadata, :support_sections,
-                  :section_spacing, :chapter_on_new_page
+                  :section_spacing, :chapter_on_new_page, :fonts
     attr_reader   :exporters, :layout_for
 
     def initialize
@@ -15,6 +15,7 @@ module Kotoba
       @creator = "Kotoba"
       @producer = "Kotoba"
       @metadata = {}
+      @fonts = []
 
       @support_sections = true
       @section_spacing = 5.mm
@@ -96,6 +97,25 @@ module Kotoba
       exporter = Kotoba::Export::Base.get(export_type).new(&block)
       exporter.setup if exporter.respond_to?(:setup)
       @exporters << exporter
+    end
+
+    # Add a font to the configuration.
+    # Any registered font can be used in the export of the document.
+    #
+    # @see Prawn's Font documentation for the already registered fonts.
+    #
+    # @param name [String] Name of the font as used in styling.
+    # @param types [Hash] Hash containing all types of the font.
+    #
+    # @example
+    #
+    #   Kotoba.config.add_font "OpenSans", {
+    #     normal: { file: "OpenSans-Regular" }
+    #     italic: { file: "OpenSans-Italic" }
+    #   }
+    #
+    def add_font(name, types)
+      @fonts << Font.new(name, types)
     end
 
     # Checks the required configuration and throws an error if it is incomplete

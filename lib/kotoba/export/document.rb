@@ -31,6 +31,12 @@ module Kotoba::Export
       outline_chapter_headings(@headings)
     end
 
+    def register_fonts!
+      Kotoba.config.fonts.each do |font|
+        font_families.update(font.name => font.types)
+      end
+    end
+
     # Returns the current page number.
     # When no page is created yet it will return 1 instead of nil or 0
     # (prawn default for page_number).
