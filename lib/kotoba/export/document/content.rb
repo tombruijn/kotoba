@@ -39,8 +39,12 @@ class Kotoba::Export::Document
   #
   def parse_and_add_content(strings)
     strings.each do |string|
-      markdown = Maruku.new(string)
-      markdown.to_prawn(self)
+      if string == Kotoba::Template::PAGE_BREAK_TAG
+        start_new_page
+      else
+        markdown = Maruku.new(string)
+        markdown.to_prawn(self)
+      end
     end
   end
 

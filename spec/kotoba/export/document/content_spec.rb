@@ -91,5 +91,17 @@ describe Kotoba::Export::Document do
 
       after { document.add_chapter(template) }
     end
+
+    describe "page breaks" do
+      let(:template) { Kotoba::Template.new("a file", "page 1\n___PAGE___\npage 2") }
+
+      it "should start a new page on page separator" do
+        document.add_chapter(template)
+        pages = PDF::Inspector::Page.analyze(document.render).pages
+        pages.size.should == 2
+        pages[0][:strings].should include "page 1"
+        pages[1][:strings].should include "page 2"
+      end
+    end
   end
 end

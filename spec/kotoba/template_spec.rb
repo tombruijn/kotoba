@@ -66,6 +66,10 @@ First section and paragraph
 
 First section with second paragraph
 
+___PAGE___
+
+First section with third paragraph
+
 
 Second section with first pagraph
 
@@ -79,13 +83,14 @@ Second section with second paragraph
 
       its([0]) {
         should == "First section and paragraph\n\nFirst section with second "\
-        "paragraph"
+        "paragraph\n"
       }
-      its([1]) {
+      its([1]) { should == Kotoba::Template::PAGE_BREAK_TAG }
+      its([2]) { "\nFirst section with third paragraph" }
+      its([3]) {
         should == "Second section with first pagraph\n\nSecond section with "\
           "second paragraph\n"
       }
-      its(:length) { should == 2 }
     end
 
     context "without sections support" do
@@ -93,10 +98,14 @@ Second section with second paragraph
 
       its([0]) {
         should == "First section and paragraph\n\nFirst section with second "\
-        "paragraph\n\n\nSecond section with first pagraph\n\nSecond section "\
-        "with second paragraph\n"
+        "paragraph\n"
       }
-      its(:length) { should == 1 }
+      its([1]) { should == Kotoba::Template::PAGE_BREAK_TAG }
+      its([2]) {
+        should == "\nFirst section with third paragraph\n\n\n"\
+          "Second section with first pagraph\n\nSecond section with "\
+          "second paragraph\n"
+      }
     end
   end
 end
