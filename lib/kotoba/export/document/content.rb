@@ -27,24 +27,18 @@ class Kotoba::Export::Document
   # @param template [Kotoba::Template] template to be added
   #
   def add_chapter(template)
-    if Kotoba.config.support_sections
-      parse_and_add_content template.sections
-    else
-      parse_and_add_content template.source
-    end
+    parse_and_add_content template.source
   end
 
   protected
 
   # Parses the strings in the given array. Any Markdown syntax will be
   # added to the document with the intended style.
-  # (Also accepts strings.)
   #
-  # @param source [Array/String] content to be added to the document.
+  # @param strings [Array] content to be added to the document.
   #
-  def parse_and_add_content(source)
-    source = [source] unless source.is_a?(Array)
-    source.each do |string|
+  def parse_and_add_content(strings)
+    strings.each do |string|
       markdown = Maruku.new(string)
       markdown.to_prawn(self)
     end

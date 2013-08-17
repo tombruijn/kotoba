@@ -22,7 +22,6 @@ Second section
     its(:file) { should == "file.md" }
     its(:source) { should include "First section" }
     its(:metadata) { should_not be_empty }
-    its(:"sections.length") { should == 2 }
   end
 
   describe ".extract_metadata" do
@@ -60,28 +59,44 @@ Actual content here
     end
   end
 
-  describe ".find_sections" do
+  describe ".source" do
     let(:text) do
-        <<-TEXT
-# Header
+      <<-TEXT
+First section and paragraph
 
-First section and paragraph here
-
-Second paragraph here
+First section with second paragraph
 
 
-Second section and first paragraph here
+Second section with first pagraph
 
-Second paragraph here
-        TEXT
+Second section with second paragraph
+      TEXT
     end
-    before do
-      template.find_sections
-    end
-    subject { template.sections }
+    subject { template.source }
 
-    its(:first) { should =~ /^# Header\n\nFirst section and paragraph/ }
-    its(:last) { should =~ /^Second section and first paragraph here/ }
-    its(:length) { should == 2 }
+    context "with sections support" do
+      before { Kotoba.config.support_sections = true }
+
+      its([0]) {
+        should == "First section and paragraph\n\nFirst section with second "\
+        "paragraph"
+      }
+      its([1]) {
+        should == "Second section with first pagraph\n\nSecond section with "\
+          "second paragraph\n"
+      }
+      its(:length) { should == 2 }
+    end
+
+    context "without sections support" do
+      before { Kotoba.config.support_sections = false }
+
+      its([0]) {
+        should == "First section and paragraph\n\nFirst section with second "\
+        "paragraph\n\n\nSecond section with first pagraph\n\nSecond section "\
+        "with second paragraph\n"
+      }
+      its(:length) { should == 1 }
+    end
   end
 end

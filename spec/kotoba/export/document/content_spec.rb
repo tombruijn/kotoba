@@ -8,7 +8,8 @@ describe Kotoba::Export::Document do
 
     it "should call content methods" do
       Kotoba::Export::Document.any_instance.should_receive(:add_book!)
-      Kotoba::Export::Document.any_instance.should_receive(:add_recurring_elements!)
+      Kotoba::Export::Document.any_instance
+        .should_receive(:add_recurring_elements!)
       Kotoba::Export::Document.any_instance.should_receive(:outline!)
       Kotoba::Export::Document.generate(filename)
     end
@@ -52,35 +53,43 @@ describe Kotoba::Export::Document do
   end
 
   describe ".add_chapter" do
-    let(:template) { Kotoba::Template.new("a file", "source of a file") }
+    let(:source) { "section 1\n\n\nsection 2" }
+    let(:template) { Kotoba::Template.new("a file", source) }
     before { Kotoba.book.stub(:templates => [template]) }
 
-    context "with section support" do
-      let(:section) { "I'm a section!" }
-      let!(:maruku) { Maruku.new(section) }
-      before { Kotoba.config.support_sections = true }
+    describe "adding content" do
+      context "with section support" do
+        before :all do
+          @maruku_one = Maruku.new("section 1")
+          @maruku_two = Maruku.new("section 2")
+        end
+        before { Kotoba.config.support_sections = true }
 
-      it "should call templates for sections" do
-        template.should_receive(:sections).and_return([section])
-        Maruku.should_receive(:new).with(section).and_return(maruku)
-        maruku.should_receive(:to_prawn).with(kind_of(Prawn::Document))
+        it "should call for template source and return sections" do
+          template.should_receive(:source).and_call_original
+          Maruku.should_receive(:new).with("section 1").and_return(@maruku_one)
+          Maruku.should_receive(:new).with("section 2").and_return(@maruku_two)
+          @maruku_one.should_receive(:to_prawn).with(kind_of(Prawn::Document))
+          @maruku_two.should_receive(:to_prawn).with(kind_of(Prawn::Document))
+        end
+
+        pending "should insert section spacing"
       end
 
-      pending "should insert section spacing"
-    end
+      context "without section support" do
+        before do
+          Kotoba.config.support_sections = false
+          @maruku = Maruku.new(source)
+        end
 
-    context "without section support" do
-      let(:source) { "I'm a source!" }
-      let!(:maruku) { Maruku.new(source) }
-      before { Kotoba.config.support_sections = false }
-
-      it "should call for template source" do
-        template.should_receive(:source).and_return(source)
-        Maruku.should_receive(:new).with(source).and_return(maruku)
-        maruku.should_receive(:to_prawn).with(kind_of(Prawn::Document))
+        it "should call for template source" do
+          template.should_receive(:source).and_call_original
+          Maruku.should_receive(:new).with(source).and_return(@maruku)
+          @maruku.should_receive(:to_prawn).with(kind_of(Prawn::Document))
+        end
       end
-    end
 
-    after { document.add_chapter(template) }
+      after { document.add_chapter(template) }
+    end
   end
 end
