@@ -2,10 +2,7 @@ module Kotoba::Export
   class Document < Prawn::Document
     include Kotoba::Outline
 
-    attr_accessor :sections
-
     def initialize(options={}, &block)
-      @sections = []
       super(next_page_options.merge(config.to_h).merge(options), &block)
     end
 
