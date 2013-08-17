@@ -105,7 +105,7 @@ describe Kotoba::Config do
       subject { Kotoba.config }
 
       its(:title) { "My loaded book" }
-      its(:title) { "my-loaded-book" }
+      its(:filename) { "my-loaded-book" }
     end
 
     context "with missing config file" do
