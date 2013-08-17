@@ -1,7 +1,7 @@
 module Kotoba
   class Template
     YAML_METADATA = /^(---\s*\n.*?\n?)^(---\s*$\n?)/m.freeze
-    SECTION_SEPERATOR = /\n\n\n/.freeze
+    SECTION_SEPARATOR = /\n\n\n/.freeze
     PAGE_BREAK_TAG = "\n___PAGE___\n"
     # Split on ___PAGE___ but keep the key
     PAGE_BREAK_SPLITTER = /(?=#{PAGE_BREAK_TAG})|(?<=#{PAGE_BREAK_TAG})/
@@ -32,7 +32,7 @@ module Kotoba
     def source
       strings = self.content.split(PAGE_BREAK_SPLITTER)
       if Kotoba.config.support_sections
-        strings.collect! { |string| string.split(SECTION_SEPERATOR) }
+        strings.collect! { |string| string.split(SECTION_SEPARATOR) }
       end
       strings.flatten
     end
