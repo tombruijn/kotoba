@@ -60,17 +60,19 @@ describe Kotoba::Export::Document do
     describe "adding content" do
       context "with section support" do
         before :all do
-          @maruku_one = Maruku.new("section 1")
-          @maruku_two = Maruku.new("section 2")
+          @kram_one = Kramdown::Document.new("section 1")
+          @kram_two = Kramdown::Document.new("section 2")
           Kotoba.config.support_sections = true
         end
 
         it "should call for template source and return sections" do
           template.should_receive(:source).and_call_original
-          Maruku.should_receive(:new).with("section 1").and_return(@maruku_one)
-          Maruku.should_receive(:new).with("section 2").and_return(@maruku_two)
-          @maruku_one.should_receive(:to_prawn).with(kind_of(Prawn::Document))
-          @maruku_two.should_receive(:to_prawn).with(kind_of(Prawn::Document))
+          Kramdown::Document.should_receive(:new).with("section 1").
+            and_return(@kram_one)
+          Kramdown::Document.should_receive(:new).with("section 2").
+            and_return(@kram_two)
+          @kram_one.should_receive(:to_prawn).with(kind_of(Prawn::Document))
+          @kram_two.should_receive(:to_prawn).with(kind_of(Prawn::Document))
         end
 
         describe "section spacing" do
@@ -99,13 +101,13 @@ describe Kotoba::Export::Document do
       context "without section support" do
         before do
           Kotoba.config.support_sections = false
-          @maruku = Maruku.new(source)
+          @kram = Kramdown::Document.new(source)
         end
 
         it "should call for template source" do
           template.should_receive(:source).and_call_original
-          Maruku.should_receive(:new).with(source).and_return(@maruku)
-          @maruku.should_receive(:to_prawn).with(kind_of(Prawn::Document))
+          Kramdown::Document.should_receive(:new).with(source).and_return(@kram)
+          @kram.should_receive(:to_prawn).with(kind_of(Prawn::Document))
         end
       end
 

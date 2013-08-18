@@ -24,7 +24,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency "prawn"
   gem.add_dependency "thor"
-  gem.add_dependency "maruku"
+  gem.add_dependency "kramdown"
   gem.add_dependency "htmlentities"
   gem.add_dependency "hashie"
 

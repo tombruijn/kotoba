@@ -1,5 +1,3 @@
-require "maruku"
-
 class Kotoba::Export::Document
   include Kotoba::Content
 
@@ -46,7 +44,7 @@ class Kotoba::Export::Document
       if is_page_break? string
         start_new_page
       else
-        markdown = Maruku.new(string)
+        markdown = Kramdown::Document.new(string)
         markdown.to_prawn(self)
 
         if insert_section_spacing?(strings, index)
