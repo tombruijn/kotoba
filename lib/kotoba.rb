@@ -4,7 +4,6 @@ module Kotoba
 
   APP_DIR = Pathname.new(Dir.pwd).freeze
   BOOK_DIR = File.join(APP_DIR, "book").freeze
-  VIEWS_DIR = File.join(BOOK_DIR, "views").freeze
   ASSETS_DIR = File.join(BOOK_DIR, "assets").freeze
   BUILD_DIR = File.join(APP_DIR, "build").freeze
 

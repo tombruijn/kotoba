@@ -21,13 +21,11 @@ TMP_DIR = File.join(Kotoba::LIB_DIR, "spec", "tmp")
 module Kotoba
   remove_const(:APP_DIR)
   remove_const(:BOOK_DIR)
-  remove_const(:VIEWS_DIR)
   remove_const(:ASSETS_DIR)
   remove_const(:BUILD_DIR)
   APP_DIR = Pathname.new(File.join(LIB_DIR, "spec", "support",
     "project")).freeze
   BOOK_DIR = File.join(APP_DIR, "book").freeze
-  VIEWS_DIR = File.join(BOOK_DIR, "views").freeze
   ASSETS_DIR = File.join(BOOK_DIR, "assets").freeze
   BUILD_DIR = File.join(TMP_DIR, "build").freeze
 
