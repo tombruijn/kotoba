@@ -38,14 +38,34 @@ class Kotoba::Export::Document
   # @param strings [Array] content to be added to the document.
   #
   def parse_and_add_content(strings)
-    strings.each do |string|
+    strings.each_with_index do |string, index|
       if string == Kotoba::Template::PAGE_BREAK_TAG
         start_new_page
       else
         markdown = Maruku.new(string)
         markdown.to_prawn(self)
+
+        if insert_section_spacing?(strings, index)
+          move_down Kotoba.config.section_spacing
+        end
       end
     end
+  end
+
+  # Returns boolean if section spacing should be added to the document.
+  # Will return false if section support is turned off.
+  # Will return false if the next section is a page break.
+  #
+  # @param sections [Array] array of strings/sections and page breaks.
+  # @param current_index [Integer] current index of the sections array.
+  #   Will be used to search ahead in the array.
+  #
+  def insert_section_spacing?(sections, current_index)
+    return false unless Kotoba.config.support_sections
+    current_section = sections[current_index]
+    next_section = sections[current_index + 1]
+    current_section != sections.last &&
+      next_section != Kotoba::Template::PAGE_BREAK_TAG
   end
 
   # Returns if the template is from a new chapter or not.

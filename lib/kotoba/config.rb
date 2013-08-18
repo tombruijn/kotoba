@@ -4,7 +4,7 @@ module Kotoba
 
     attr_accessor :filename, :encoding, :title, :authors, :subject, :keywords,
                   :creator, :producer, :metadata, :support_sections,
-                  :chapter_on_new_page
+                  :section_spacing, :chapter_on_new_page
     attr_reader   :exporters, :layout_for
 
     def initialize
@@ -17,6 +17,7 @@ module Kotoba
       @metadata = {}
 
       @support_sections = true
+      @section_spacing = 5.mm
       @chapter_on_new_page = true
 
       @encoding = "UTF-8"

@@ -62,8 +62,8 @@ describe Kotoba::Export::Document do
         before :all do
           @maruku_one = Maruku.new("section 1")
           @maruku_two = Maruku.new("section 2")
+          Kotoba.config.support_sections = true
         end
-        before { Kotoba.config.support_sections = true }
 
         it "should call for template source and return sections" do
           template.should_receive(:source).and_call_original
@@ -73,7 +73,27 @@ describe Kotoba::Export::Document do
           @maruku_two.should_receive(:to_prawn).with(kind_of(Prawn::Document))
         end
 
-        pending "should insert section spacing"
+        describe "section spacing" do
+          let(:template) do
+            Kotoba::Template.new("a file",
+              "section 1\n\n\nsection 2")
+          end
+          before(:all) { Kotoba.config.section_spacing = 10.mm }
+
+          it "should add spacing between sections but not after last section" do
+            document.should_receive(:move_down).once.with(10.mm)
+          end
+
+          context "with page breaks" do
+            let(:template) {
+              Kotoba::Template.new("a file", "s1\n\n\n___PAGE___\n\n\ns2")
+            }
+
+            it "should not add spacing between sections and page breaks" do
+              document.should_not_receive(:move_down)
+            end
+          end
+        end
       end
 
       context "without section support" do
@@ -93,7 +113,9 @@ describe Kotoba::Export::Document do
     end
 
     describe "page breaks" do
-      let(:template) { Kotoba::Template.new("a file", "page 1\n___PAGE___\npage 2") }
+      let(:template) {
+        Kotoba::Template.new("a file", "page 1\n___PAGE___\npage 2")
+      }
 
       it "should start a new page on page separator" do
         document.add_chapter(template)
