@@ -6,23 +6,30 @@ describe Kotoba do
       Kotoba::LIB_DIR.should include "kotoba"
     end
 
+    it "should have BIN_DIR" do
+      Kotoba::BIN_DIR.should include Kotoba::LIB_DIR
+      Kotoba::BIN_DIR.should include "bin"
+    end
+
     it "should detect APP_DIR" do
       Kotoba::APP_DIR.should be_instance_of(Pathname)
       Kotoba::APP_DIR.to_s.length.should > 1
     end
 
-    it "should have library dirs" do
-      Kotoba::BIN_DIR.should include Kotoba::LIB_DIR
-      Kotoba::BIN_DIR.should include "bin"
+    it "should have BOOK_DIR" do
+      Kotoba::BOOK_DIR.should include Kotoba::APP_DIR.to_s
+      Kotoba::BOOK_DIR.should include "book"
     end
 
-    it "should have app dirs" do
-      [Kotoba::BOOK_DIR, Kotoba::ASSETS_DIR].each do |path|
-        path.should include Kotoba::APP_DIR.to_s
-      end
+    it "should have ASSETS_DIR" do
+      Kotoba::ASSETS_DIR.should include Kotoba::BOOK_DIR
+      Kotoba::ASSETS_DIR.should include "assets"
     end
 
-    pending "other dirs"
+    it "should have BUILD_DIR" do
+      Kotoba::BUILD_DIR.should include Kotoba::APP_DIR.to_s
+      Kotoba::BUILD_DIR.should include "build"
+    end
   end
 
   describe "initialize" do

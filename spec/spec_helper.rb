@@ -8,9 +8,9 @@ end
 $TESTING = true
 
 require "rspec"
+require "pry"
 require "kotoba"
 require "kotoba/cli"
-require "pry"
 require "fileutils"
 require "pdf/reader"
 require "pdf/inspector"
@@ -19,15 +19,33 @@ require "support/helpers/pdf_helper"
 TMP_DIR = File.join(Kotoba::LIB_DIR, "spec", "tmp")
 
 module Kotoba
-  remove_const(:APP_DIR)
-  remove_const(:BOOK_DIR)
-  remove_const(:ASSETS_DIR)
-  remove_const(:BUILD_DIR)
-  APP_DIR = Pathname.new(File.join(LIB_DIR, "spec", "support",
-    "project")).freeze
-  BOOK_DIR = File.join(APP_DIR, "book").freeze
-  ASSETS_DIR = File.join(BOOK_DIR, "assets").freeze
-  BUILD_DIR = File.join(TMP_DIR, "build").freeze
+  def self.remove_paths!
+    remove_const(:APP_DIR)
+    remove_const(:BOOK_DIR)
+    remove_const(:ASSETS_DIR)
+    remove_const(:BUILD_DIR)
+  end
+
+  def self.set_original_constant_values!
+    @APP_DIR ||= APP_DIR
+    @BOOK_DIR ||= BOOK_DIR
+    @ASSETS_DIR ||= ASSETS_DIR
+    @BUILD_DIR ||= BUILD_DIR
+    remove_paths!
+    self.const_set(:APP_DIR, @APP_DIR)
+    self.const_set(:BOOK_DIR, @BOOK_DIR)
+    self.const_set(:ASSETS_DIR, @ASSETS_DIR)
+    self.const_set(:BUILD_DIR, @BUILD_DIR)
+  end
+
+  def self.set_spec_paths!
+    remove_paths!
+    self.const_set(:APP_DIR, Pathname.new(File.join(LIB_DIR, "spec",
+      "support", "project")))
+    self.const_set(:BOOK_DIR, File.join(APP_DIR, "book"))
+    self.const_set(:ASSETS_DIR, File.join(BOOK_DIR, "assets"))
+    self.const_set(:BUILD_DIR, File.join(TMP_DIR, "build"))
+  end
 
   class << self
     def clear_config!
@@ -38,6 +56,8 @@ end
 
 RSpec.configure do |config|
   config.before(:all) do
+    Kotoba.set_original_constant_values!
+    Kotoba.set_spec_paths! unless self.class.description == "Kotoba"
     Kotoba.clear_config!
   end
 end
