@@ -28,9 +28,14 @@ module Kotoba
     def source
       strings = self.content.split(PAGE_BREAK_SPLITTER)
       if Kotoba.config.support_sections
-        strings.collect! { |string| string.split(SECTION_SEPARATOR) }
+        strings.collect! do |string|
+          sections = string.split(SECTION_SEPARATOR)
+          sections.reject do |section|
+            section.empty? || contains_only_line_breaks?(section)
+          end
+        end.flatten!
       end
-      strings.flatten
+      strings
     end
   end
 end

@@ -1,11 +1,25 @@
 module Kotoba::Content
+  ONLY_LINE_BREAKS = /\A(\n)+\z/
   YAML_METADATA = /^(---\s*\n.*?\n?)^(---\s*$\n?)/m.freeze
   SECTION_SEPARATOR = /\n\n\n/.freeze
   PAGE_BREAK_TAG = "\n___PAGE___\n"
   # Split on ___PAGE___ but keep the key
   PAGE_BREAK_SPLITTER = /(?=#{PAGE_BREAK_TAG})|(?<=#{PAGE_BREAK_TAG})/
 
+  # Returns true or false depending if the given string only consists of line
+  # breaks.
+  #
+  # @param string [String] String to test.
+  #
+  # @return [Boolean]
+  #
+  def contains_only_line_breaks?(string)
+    string =~ ONLY_LINE_BREAKS
+  end
+
   # Returns true or false depending if the given string is a page break.
+  #
+  # @param string [String] String to test.
   #
   # @return [Boolean]
   #

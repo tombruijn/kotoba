@@ -71,7 +71,7 @@ ___PAGE___
 First section with third paragraph
 
 
-Second section with first pagraph
+Second section with first paragraph
 
 Second section with second paragraph
       TEXT
@@ -88,9 +88,17 @@ Second section with second paragraph
       its([1]) { should == Kotoba::Template::PAGE_BREAK_TAG }
       its([2]) { "\nFirst section with third paragraph" }
       its([3]) {
-        should == "Second section with first pagraph\n\nSecond section with "\
+        should == "Second section with first paragraph\n\nSecond section with "\
           "second paragraph\n"
       }
+
+      context "with excessive line breaks" do
+        let(:text) { "section 1\n\n\n\n\n\n___PAGE___\n\n\n\n\n\nsection 2" }
+
+        its([0]) { should == "section 1" }
+        its([1]) { should == Kotoba::Template::PAGE_BREAK_TAG }
+        its([2]) { should == "\n\nsection 2" }
+      end
     end
 
     context "without sections support" do
@@ -103,7 +111,7 @@ Second section with second paragraph
       its([1]) { should == Kotoba::Template::PAGE_BREAK_TAG }
       its([2]) {
         should == "\nFirst section with third paragraph\n\n\n"\
-          "Second section with first pagraph\n\nSecond section with "\
+          "Second section with first paragraph\n\nSecond section with "\
           "second paragraph\n"
       }
     end
