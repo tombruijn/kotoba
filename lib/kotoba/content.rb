@@ -27,7 +27,7 @@ module Kotoba::Content
     string == PAGE_BREAK_TAG
   end
 
-  # Returns boolean if section spacing should be added to the document.
+  # Returns true/false if section spacing should be added to the document.
   # Will return false if section support is turned off.
   # Will return false if the next section is a page break.
   #

@@ -11,6 +11,17 @@ module Kotoba
       extract_metadata
     end
 
+    # Extracts metadata from a file. Metadata should be in the YAML format.
+    # Metadata should be at the very start of the file.
+    # It removes the metadata from the content that will be parsed.
+    #
+    # @example Expected format in a file:
+    #   ---
+    #   key: value
+    #   ---
+    #
+    #   Actual content of the file.
+    #
     def extract_metadata
       YAML_METADATA.match(content) do |match|
         @metadata = YAML.load(match[0])
