@@ -1,6 +1,8 @@
 require "maruku"
 
 class Kotoba::Export::Document
+  include Kotoba::Content
+
   def self.generate(filename)
     pdf = Kotoba::Export::Document.new do |prawn|
       # Add book content
@@ -34,12 +36,14 @@ class Kotoba::Export::Document
 
   # Parses the strings in the given array. Any Markdown syntax will be
   # added to the document with the intended style.
+  # Page breaks will be added to the document when PAGE_BREAK_TAG is detected.
+  # Will add spacing between sections if active.
   #
   # @param strings [Array] content to be added to the document.
   #
   def parse_and_add_content(strings)
     strings.each_with_index do |string, index|
-      if string == Kotoba::Template::PAGE_BREAK_TAG
+      if is_page_break? string
         start_new_page
       else
         markdown = Maruku.new(string)
@@ -50,34 +54,5 @@ class Kotoba::Export::Document
         end
       end
     end
-  end
-
-  # Returns boolean if section spacing should be added to the document.
-  # Will return false if section support is turned off.
-  # Will return false if the next section is a page break.
-  #
-  # @param sections [Array] array of strings/sections and page breaks.
-  # @param current_index [Integer] current index of the sections array.
-  #   Will be used to search ahead in the array.
-  #
-  def insert_section_spacing?(sections, current_index)
-    return false unless Kotoba.config.support_sections
-    current_section = sections[current_index]
-    next_section = sections[current_index + 1]
-    current_section != sections.last &&
-      next_section != Kotoba::Template::PAGE_BREAK_TAG
-  end
-
-  # Returns if the template is from a new chapter or not.
-  # Remembers the last asked template for future calls.
-  #
-  # @return [Boolean] if template is a new chapter (based on previous calls)
-  #
-  def new_chapter?(template)
-    return false unless Kotoba.config.chapter_on_new_page
-    template_dir = File.dirname(template.file)
-    is_new_dir = !(@last_dir.nil? || @last_dir == template_dir)
-    @last_dir = template_dir
-    is_new_dir
   end
 end

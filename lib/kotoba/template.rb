@@ -1,10 +1,6 @@
 module Kotoba
   class Template
-    YAML_METADATA = /^(---\s*\n.*?\n?)^(---\s*$\n?)/m.freeze
-    SECTION_SEPARATOR = /\n\n\n/.freeze
-    PAGE_BREAK_TAG = "\n___PAGE___\n"
-    # Split on ___PAGE___ but keep the key
-    PAGE_BREAK_SPLITTER = /(?=#{PAGE_BREAK_TAG})|(?<=#{PAGE_BREAK_TAG})/
+    include Kotoba::Content
 
     attr_reader :file, :metadata, :content
 
