@@ -103,12 +103,11 @@ module Kramdown::Converter
     alias :convert_strong :convert_em
 
     def convert_entity(el)
+      ::Kramdown::Utils::Entities.entity(el.value.to_s).char
     end
+    alias :convert_smart_quote :convert_entity
 
     def convert_typographic_sym(el)
-    end
-
-    def convert_smart_quote(el)
     end
 
     def convert_math(el)

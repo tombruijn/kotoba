@@ -36,6 +36,16 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
+  describe "entities" do
+    let(:text) { "text & more text \" text 'something' ^ text don't" }
+
+    it "should add entities" do
+      prawn.should_receive(:text).with(
+        "text & more text \u201C text \u2018something\u2019 ^ text don\u2019t",
+        kind_of(Hash))
+    end
+  end
+
   describe "horizontal rule" do
     let(:text) {
       "text\n\n---\n\ntext\n\n* * *\n\ntext\n\n***\n\ntext\n\n*****\n\ntext"\
