@@ -36,6 +36,28 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
+  describe "code" do
+    let(:text) { "normal text\n\n    code\n\nmore text" }
+
+    it "should create code block" do
+      prawn.should_receive(:text).with("normal text", kind_of(Hash)).ordered
+      prawn.should_receive(:text).with(/code/, kind_of(Hash)).ordered
+      prawn.should_receive(:text).with("more text", kind_of(Hash)).ordered
+    end
+  end
+
+  describe "inline code" do
+    let(:text) { "normal text `inline code` more text" }
+
+    it "should call inline formatting" do
+      Kramdown::Converter::Prawn.any_instance.
+        stub(inline_formatting_for: "<style>inline code</style>")
+      prawn.should_receive(:text).with(
+        "normal text <style>inline code</style> more text",
+        kind_of(Hash))
+    end
+  end
+
   describe "entities" do
     let(:text) { "text & more text \" text 'something' ^ text don't" }
 

@@ -16,7 +16,7 @@ module Kramdown::Converter
       [result, converter.warnings]
     end
 
-    def convert(el, options={})
+    def convert(el)
       send("convert_#{el.type}", el)
     end
 
@@ -29,11 +29,15 @@ module Kramdown::Converter
 
     def convert_p(el)
       options = options_for(:paragraph)
-
       prawn.text convert_children(el.children).join, options
     end
 
+    def convert_codespan(el)
+      inline_formatting_for(:code, el)
+    end
+
     def convert_codeblock(el)
+      prawn.text el.value, options_for(:code)
     end
 
     def convert_blockquote(el)
@@ -70,7 +74,7 @@ module Kramdown::Converter
     alias :convert_thead :convert_table
     alias :convert_tbody :convert_table
     alias :convert_tfoot :convert_table
-    alias :convert_tr  :convert_table
+    alias :convert_tr :convert_table
 
     def convert_td(el)
     end
@@ -85,9 +89,6 @@ module Kramdown::Converter
     end
 
     def convert_img(el)
-    end
-
-    def convert_codespan(el)
     end
 
     def convert_footnote(el)
@@ -128,6 +129,21 @@ module Kramdown::Converter
         results << convert(child)
       end
       results
+    end
+
+    def inline_formatting_for(element_type, el)
+      layout = layout_for(element_type)
+
+      if layout.style.include?(:italic) || layout.style.include?("italic")
+        element = "<i>#{element}</i>"
+      end
+      if layout.style.include?(:bold) || layout.style.include?("bold")
+        element = "<b>#{element}</b>"
+      end
+      element = "<color rgb='#{layout.color}'>#{element}</color>"
+      element = "<font name='#{layout.font}' size='#{layout.size}' "\
+        "character_spacing='#{layout.character_spacing}'>#{el.value}</font>"
+      element
     end
 
     # Returns the layout configuration for a specific element type

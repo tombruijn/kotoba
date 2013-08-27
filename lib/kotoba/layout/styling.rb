@@ -16,7 +16,7 @@ class Kotoba::Layout
       @page_range = page_range
     end
 
-    def to_hash
+    def to_h
       {}.tap do |hash|
         hash[:font] = font if using_prawn_font?
         hash[:size] = size
