@@ -58,6 +58,26 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
+  describe ".to_prawn_ol" do
+    let(:text) { "\n1. one\n2. two\n3. three\n" }
+
+    it "should every list item" do
+      prawn.should_receive(:text).with("1. one", kind_of(Hash))
+      prawn.should_receive(:text).with("2. two", kind_of(Hash))
+      prawn.should_receive(:text).with("3. three", kind_of(Hash))
+    end
+  end
+
+  describe ".to_prawn_ul" do
+    let(:text) { "\n- one\n- two\n- three\n" }
+
+    it "should every list item" do
+      prawn.should_receive(:text).with("- one", kind_of(Hash))
+      prawn.should_receive(:text).with("- two", kind_of(Hash))
+      prawn.should_receive(:text).with("- three", kind_of(Hash))
+    end
+  end
+
   describe "entities" do
     let(:text) { "text & more text \" text 'something' ^ text don't" }
 
