@@ -34,7 +34,12 @@ module Kramdown::Converter
 
     def convert_p(el, options = {})
       @paragraph_count += 1
-      style = style_for_paragraph(@paragraph_count)
+      indenting = true
+      if options[:indent] === false
+        indenting = false
+        reset_paragraph_count
+      end
+      style = style_for_paragraph(@paragraph_count, indenting)
       prefix = format_prefix(options[:prefix])
       prawn.text "#{prefix}#{convert_children(el.children).join}", style
     end
@@ -69,7 +74,7 @@ module Kramdown::Converter
 
     def convert_li(el, options = {})
       @ol_index += 1
-      convert_children(el.children, { prefix: options[:prefix] })
+      convert_children(el.children, { prefix: options[:prefix], indent: false })
     end
     alias :convert_dd :convert_li
 
@@ -179,16 +184,18 @@ module Kramdown::Converter
       layout_for(element).to_h.merge(inline_format: true)
     end
 
-    def style_for_paragraph(i)
+    def style_for_paragraph(i, indenting)
       options = layout_for(:default).to_h.merge(inline_format: true)
       style = layout_for(:paragraph)
-      # Normal paragraph indenting
-      indent = style.indent
-      # Book indent: Do not indent first paragraph in section
-      if style.book_indent
-        indent = indent && i > 1
+      if indenting
+        # Normal paragraph indenting
+        indent = style.indent
+        # Book indent: Do not indent first paragraph in section
+        if style.book_indent
+          indent = indent && i > 1
+        end
+        options.merge!(style.to_h) if indent
       end
-      options.merge!(style.to_h) if indent
       options
     end
 

@@ -105,9 +105,32 @@ describe Kramdown::Converter::Prawn do
     let(:text) { "\n1. one\n2. two\n3. three\n" }
 
     it "should every list item" do
-      prawn.should_receive(:text).with("1. one", kind_of(Hash))
-      prawn.should_receive(:text).with("2. two", kind_of(Hash))
-      prawn.should_receive(:text).with("3. three", kind_of(Hash))
+      prawn.should_receive(:text).with("1. one", kind_of(Hash)).ordered
+      prawn.should_receive(:text).with("2. two", kind_of(Hash)).ordered
+      prawn.should_receive(:text).with("3. three", kind_of(Hash)).ordered
+    end
+
+    context "between paragraphs" do
+      let(:text) { "paragraph\n\n1. one\n2. two\n3. three\n\nend" }
+      before :all do
+        Kotoba.config.layout.paragraph do |p|
+          p.indent = true
+          p.indent_with = 50.mm
+        end
+      end
+
+      it "should not add indenting to li paragraphs" do
+        prawn.should_receive(:text).
+          with("paragraph", hash_including(:indent_paragraphs)).ordered
+        prawn.should_receive(:text).
+          with("1. one", hash_not_including(:indent_paragraphs)).ordered
+        prawn.should_receive(:text).
+          with("2. two", hash_not_including(:indent_paragraphs)).ordered
+        prawn.should_receive(:text).
+          with("3. three", hash_not_including(:indent_paragraphs)).ordered
+        prawn.should_receive(:text).
+          with("end", hash_including(:indent_paragraphs)).ordered
+      end
     end
   end
 
@@ -115,9 +138,9 @@ describe Kramdown::Converter::Prawn do
     let(:text) { "\n- one\n- two\n- three\n" }
 
     it "should every list item" do
-      prawn.should_receive(:text).with("- one", kind_of(Hash))
-      prawn.should_receive(:text).with("- two", kind_of(Hash))
-      prawn.should_receive(:text).with("- three", kind_of(Hash))
+      prawn.should_receive(:text).with("- one", kind_of(Hash)).ordered
+      prawn.should_receive(:text).with("- two", kind_of(Hash)).ordered
+      prawn.should_receive(:text).with("- three", kind_of(Hash)).ordered
     end
   end
 
