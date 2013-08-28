@@ -4,7 +4,7 @@ class Kotoba::Layout
     property :indent_with, :default => 5.mm
     property :book_indent, :default => true
 
-    def to_hash
+    def to_h
       {}.tap do |hash|
         hash[:indent_paragraphs] = indent_with if indent
       end

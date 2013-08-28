@@ -1,11 +1,16 @@
 module Kramdown::Converter
   class Prawn < Base
-    attr_accessor :prawn
+    # Prawn document, is called to add content
+    attr_reader :prawn
+    # Integer value that counts the number of paragraphs in one section
+    # @see convert_p
+    attr_reader :paragraph_count
 
     def initialize(root, options, prawn)
       super(root, options)
       @prawn = prawn
       @indent = 2
+      reset_paragraph_count
     end
 
     def self.convert(tree, options = {}, prawn)
@@ -28,8 +33,9 @@ module Kramdown::Converter
     end
 
     def convert_p(el, options = {})
-      style = style_for(:paragraph)
-      prefix = (options[:prefix] || "").gsub("{n}", @ol_index.to_s)
+      @paragraph_count += 1
+      style = style_for_paragraph(@paragraph_count)
+      prefix = format_prefix(options[:prefix])
       prawn.text "#{prefix}#{convert_children(el.children).join}", style
     end
 
@@ -171,6 +177,27 @@ module Kramdown::Converter
 
     def style_for(element, selector = nil)
       layout_for(element).to_h.merge(inline_format: true)
+    end
+
+    def style_for_paragraph(i)
+      options = layout_for(:default).to_h.merge(inline_format: true)
+      style = layout_for(:paragraph)
+      # Normal paragraph indenting
+      indent = style.indent
+      # Book indent: Do not indent first paragraph in section
+      if style.book_indent
+        indent = indent && i > 1
+      end
+      options.merge!(style.to_h) if indent
+      options
+    end
+
+    def reset_paragraph_count
+      @paragraph_count = 0
+    end
+
+    def format_prefix(prefix)
+      (prefix || "").gsub("{n}", @ol_index.to_s)
     end
   end
 end

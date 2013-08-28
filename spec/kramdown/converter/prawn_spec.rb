@@ -8,17 +8,60 @@ describe Kramdown::Converter::Prawn do
   describe "text options" do
     let(:text) { "text" }
 
-    it "should create a paragraph" do
+    it "should add text with inline formatting on" do
       prawn.should_receive(:text).
         with("text", hash_including(inline_format: true))
     end
   end
 
   describe "plain text" do
-    let(:text) { "text" }
+    let(:text) { "text\n\ntext\n\ntext\n\ntext" }
 
     it "should create a paragraph" do
-      prawn.should_receive(:text).with("text", kind_of(Hash))
+      prawn.should_receive(:text).exactly(4).times.with("text", kind_of(Hash))
+    end
+
+    describe "paragraph indenting" do
+      context "with book indent" do
+        before :all do
+          Kotoba.config.layout.paragraph do |p|
+            p.indent = true
+            p.indent_with = 50.mm
+            p.book_indent = true
+          end
+        end
+
+        it "should add alternating indenting" do
+          prawn.should_receive(:text).exactly(1).times.ordered.
+            with("text", hash_not_including(:indent_paragraphs))
+          prawn.should_receive(:text).exactly(3).times.ordered.
+            with("text", hash_including(:indent_paragraphs))
+        end
+      end
+
+      context "without book indent" do
+        before :all do
+          Kotoba.config.layout.paragraph do |p|
+            p.indent = true
+            p.indent_with = 50.mm
+            p.book_indent = false
+          end
+        end
+
+        it "should not add book indent, but normal indent" do
+          prawn.should_receive(:text).exactly(4).times.
+            with("text", hash_including(:indent_paragraphs))
+        end
+      end
+
+      context "without indent" do
+        before(:all) { Kotoba.config.layout.paragraph.indent = false }
+
+        it "should not add indenting options" do
+          prawn.should_receive(:text).exactly(4).times.
+            with("text", hash_not_including(:indent_paragraphs))
+        end
+      end
     end
   end
 
