@@ -95,13 +95,16 @@ module Kramdown::Converter
     end
 
     def convert_html_element(el, options = {})
+      raise "HTML element not supported: #{el.inspect}"
     end
 
     def convert_xml_comment(el, options = {})
+      raise "XML comment not supported: #{el.inspect}"
     end
     alias :convert_xml_pi :convert_xml_comment
 
     def convert_table(el, options = {})
+      raise "Table not supported: #{el.inspect}"
     end
     alias :convert_thead :convert_table
     alias :convert_tbody :convert_table
@@ -109,12 +112,15 @@ module Kramdown::Converter
     alias :convert_tr :convert_table
 
     def convert_td(el, options = {})
+      raise "Table cell not supported: #{el.inspect}"
     end
 
     def convert_comment(el, options = {})
+      raise "Comment not supported: #{el.inspect}"
     end
 
     def convert_br(el, options = {})
+      raise "BR not supported: #{el.inspect}"
     end
 
     def convert_a(el, options = {})
@@ -123,12 +129,15 @@ module Kramdown::Converter
     end
 
     def convert_img(el, options = {})
+      raise "Image not supported: #{el.inspect}"
     end
 
     def convert_footnote(el, options = {})
+      raise "Footnote not supported: #{el.inspect}"
     end
 
     def convert_raw(el, options = {})
+      raise "Raw not supported: #{el.inspect}"
     end
 
     def convert_em(el, options = {})
@@ -143,12 +152,16 @@ module Kramdown::Converter
     alias :convert_smart_quote :convert_entity
 
     def convert_typographic_sym(el, options = {})
+      # http://kramdown.rubyforge.org/syntax.html#typographic-symbols
+      # raise "Typographic Symbol not supported: #{el.inspect}"
     end
 
     def convert_math(el, options = {})
+      raise "Math not supported: #{el.inspect}"
     end
 
     def convert_abbreviation(el, options = {})
+      raise "Abbreviation not supported: #{el.inspect}"
     end
 
     def convert_root(el, options = {})
