@@ -34,10 +34,11 @@ module Kramdown::Converter
 
     def convert_p(el, options = {})
       @paragraph_count += 1
-      indent = options.delete(:indent)
+      indent = options.delete(:indent_paragraphs)
       reset_paragraph_count if indent === false
 
       style = style_for_paragraph(@paragraph_count, indent)
+      style.merge(options)
       prefix = format_prefix(options[:prefix])
       prawn.text "#{prefix}#{convert_children(el.children).join}", style
     end
@@ -53,7 +54,8 @@ module Kramdown::Converter
 
     def convert_blockquote(el, options = {})
       style = style_for(:quote)
-      convert_children(el.children, indent: style[:indent_paragraphs])
+      convert_children(el.children,
+        indent_paragraphs: style[:indent_paragraphs])
     end
 
     def convert_header(el, options = {})
@@ -82,10 +84,10 @@ module Kramdown::Converter
     alias :convert_ol :convert_ul
     alias :convert_dl :convert_ul
 
-    # @todo configurable indent for li-s
     def convert_li(el, options = {})
       @ol_index += 1
-      convert_children(el.children, { prefix: options[:prefix], indent: 15.mm })
+      style = style_for(:list).to_h.merge(prefix: options[:prefix])
+      convert_children(el.children, style)
     end
     alias :convert_dd :convert_li
 

@@ -157,9 +157,14 @@ describe Kramdown::Converter::Prawn do
     context "between paragraphs" do
       let(:text) { "paragraph\n\n1. one\n2. two\n3. three\n\nend" }
       before :all do
-        Kotoba.config.layout.paragraph do |p|
-          p.indent = true
-          p.indent_with = 50.mm
+        Kotoba.config.layout do |l|
+          l.paragraph do |p|
+            p.indent = true
+            p.indent_with = 50.mm
+          end
+          l.list do |l|
+            l.indent = 100.mm
+          end
         end
       end
 
@@ -167,11 +172,11 @@ describe Kramdown::Converter::Prawn do
         prawn.should_receive(:text).
           with("paragraph", hash_including(indent_paragraphs: 50.mm)).ordered
         prawn.should_receive(:text).
-          with("1. one", hash_including(indent_paragraphs: 15.mm)).ordered
+          with("1. one", hash_including(indent_paragraphs: 100.mm)).ordered
         prawn.should_receive(:text).
-          with("2. two", hash_including(indent_paragraphs: 15.mm)).ordered
+          with("2. two", hash_including(indent_paragraphs: 100.mm)).ordered
         prawn.should_receive(:text).
-          with("3. three", hash_including(indent_paragraphs: 15.mm)).ordered
+          with("3. three", hash_including(indent_paragraphs: 100.mm)).ordered
         prawn.should_receive(:text).
           with("end", hash_including(indent_paragraphs: 50.mm)).ordered
       end

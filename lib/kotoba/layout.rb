@@ -7,7 +7,7 @@ module Kotoba
     property :height, :default => 0
 
     attr_reader :margin, :header, :footer, :paragraph, :headings,
-                :quote, :code
+                :quote, :code, :list
 
     def initialize(args = {})
       super(args)
@@ -96,6 +96,12 @@ module Kotoba
       @code ||= Styling.new(page_range)
       yield(@code) if block_given?
       @code
+    end
+
+    def list
+      @list ||= Styling.new(page_range)
+      yield(@list) if block_given?
+      @list
     end
 
     # Returns a hash with keys and values that should be given to prawn
