@@ -89,6 +89,7 @@ module Kotoba::Export
     # @see Kotoba::Outline's register_heading method for heading structure.
     #
     def outline_chapter_headings(list)
+      return if list.nil?
       list.each do |heading|
         if heading[:children].empty?
           outline.page(:title => heading[:name], :destination => heading[:page])
