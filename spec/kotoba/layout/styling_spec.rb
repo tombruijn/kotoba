@@ -14,6 +14,7 @@ describe Kotoba::Layout::Styling do
       @styling.character_spacing = 1.pt
       @styling.line_height = 20.pt
       @styling.style = ["bold", "italic"]
+      @styling.indent = 1.cm
       @styling.prefix = "In the beginning"
     end
 
@@ -25,6 +26,7 @@ describe Kotoba::Layout::Styling do
     its(:character_spacing) { should == 1.pt }
     its(:line_height) { should == 20.pt }
     its(:style) { should == ["bold", "italic"] }
+    its(:indent) { should == 1.cm }
 
     pending "not yet supported" do
       its(:prefix) { should == "In the beginning" }
@@ -42,6 +44,8 @@ describe Kotoba::Layout::Styling do
     its(:character_spacing) { should == 0 }
     its(:line_height) { should == 12.pt }
     its(:style) { should be_empty }
+    its(:indent) { should == 0.mm }
+
     pending "not yet supported" do
       its(:prefix) { should be_empty }
     end
@@ -62,6 +66,7 @@ describe Kotoba::Layout::Styling do
     its(:character_spacing) { should == 0 }
     its(:line_height) { should == 12.pt }
     its(:style) { should be_empty }
+    its(:indent) { should == 0.mm }
 
     pending "not yet supported" do
       its(:prefix) { should be_empty }

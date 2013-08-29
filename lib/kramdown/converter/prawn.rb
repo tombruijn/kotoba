@@ -34,12 +34,10 @@ module Kramdown::Converter
 
     def convert_p(el, options = {})
       @paragraph_count += 1
-      indenting = true
-      if options[:indent] === false
-        indenting = false
-        reset_paragraph_count
-      end
-      style = style_for_paragraph(@paragraph_count, indenting)
+      indent = options.delete(:indent)
+      reset_paragraph_count if indent === false
+
+      style = style_for_paragraph(@paragraph_count, indent)
       prefix = format_prefix(options[:prefix])
       prawn.text "#{prefix}#{convert_children(el.children).join}", style
     end
@@ -49,10 +47,13 @@ module Kramdown::Converter
     end
 
     def convert_codeblock(el, options = {})
-      prawn.text el.value, style_for(:code)
+      style = style_for(:code)
+      prawn.text el.value, style
     end
 
     def convert_blockquote(el, options = {})
+      style = style_for(:quote)
+      convert_children(el.children, indent: style[:indent_paragraphs])
     end
 
     def convert_header(el, options = {})
@@ -81,9 +82,10 @@ module Kramdown::Converter
     alias :convert_ol :convert_ul
     alias :convert_dl :convert_ul
 
+    # @todo configurable indent for li-s
     def convert_li(el, options = {})
       @ol_index += 1
-      convert_children(el.children, { prefix: options[:prefix], indent: false })
+      convert_children(el.children, { prefix: options[:prefix], indent: 15.mm })
     end
     alias :convert_dd :convert_li
 
@@ -195,10 +197,12 @@ module Kramdown::Converter
       layout_for(element, selector).to_h.merge(inline_format: true)
     end
 
-    def style_for_paragraph(i, indenting)
+    def style_for_paragraph(i, fixed_indent = nil)
       options = layout_for(:default).to_h.merge(inline_format: true)
-      style = layout_for(:paragraph)
-      if indenting
+      if fixed_indent
+        options.merge!(indent_paragraphs: fixed_indent)
+      else
+        style = layout_for(:paragraph)
         # Normal paragraph indenting
         indent = style.indent
         # Book indent: Do not indent first paragraph in section

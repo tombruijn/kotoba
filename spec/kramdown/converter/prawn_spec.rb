@@ -33,9 +33,9 @@ describe Kramdown::Converter::Prawn do
 
         it "should add alternating indenting" do
           prawn.should_receive(:text).exactly(1).times.ordered.
-            with("text", hash_not_including(:indent_paragraphs))
+            with("text", hash_including(indent_paragraphs: 0.0))
           prawn.should_receive(:text).exactly(3).times.ordered.
-            with("text", hash_including(:indent_paragraphs))
+            with("text", hash_including(indent_paragraphs: 50.mm))
         end
       end
 
@@ -50,7 +50,7 @@ describe Kramdown::Converter::Prawn do
 
         it "should not add book indent, but normal indent" do
           prawn.should_receive(:text).exactly(4).times.
-            with("text", hash_including(:indent_paragraphs))
+            with("text", hash_including(indent_paragraphs: 50.mm))
         end
       end
 
@@ -59,7 +59,7 @@ describe Kramdown::Converter::Prawn do
 
         it "should not add indenting options" do
           prawn.should_receive(:text).exactly(4).times.
-            with("text", hash_not_including(:indent_paragraphs))
+            with("text", hash_including(indent_paragraphs: 0.0))
         end
       end
     end
@@ -107,7 +107,7 @@ describe Kramdown::Converter::Prawn do
       prawn.should_receive(:text).with(
         "normal text <link href='http://url.domain'>some link</link> "\
         "<link href='http://url.link%27/'>another link</link> more text",
-        kind_of(Hash)).ordered
+        kind_of(Hash))
     end
   end
 
@@ -133,6 +133,18 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
+  describe "quotes" do
+    let(:text) { "text\n\n> block\n> quote\n> for you\n\nmore text" }
+    before(:all) { Kotoba.config.layout.quote { |q| q.indent = 5.cm } }
+
+    it "should add quote block with indent" do
+      prawn.should_receive(:text).with("text", kind_of(Hash))
+      prawn.should_receive(:text).
+        with("block\nquote\nfor you", hash_including(indent_paragraphs: 5.cm))
+      prawn.should_receive(:text).with("more text", kind_of(Hash))
+    end
+  end
+
   describe ".to_prawn_ol" do
     let(:text) { "\n1. one\n2. two\n3. three\n" }
 
@@ -151,17 +163,17 @@ describe Kramdown::Converter::Prawn do
         end
       end
 
-      it "should not add indenting to li paragraphs" do
+      it "should add indenting to li paragraphs" do
         prawn.should_receive(:text).
-          with("paragraph", hash_including(:indent_paragraphs)).ordered
+          with("paragraph", hash_including(indent_paragraphs: 50.mm)).ordered
         prawn.should_receive(:text).
-          with("1. one", hash_not_including(:indent_paragraphs)).ordered
+          with("1. one", hash_including(indent_paragraphs: 15.mm)).ordered
         prawn.should_receive(:text).
-          with("2. two", hash_not_including(:indent_paragraphs)).ordered
+          with("2. two", hash_including(indent_paragraphs: 15.mm)).ordered
         prawn.should_receive(:text).
-          with("3. three", hash_not_including(:indent_paragraphs)).ordered
+          with("3. three", hash_including(indent_paragraphs: 15.mm)).ordered
         prawn.should_receive(:text).
-          with("end", hash_including(:indent_paragraphs)).ordered
+          with("end", hash_including(indent_paragraphs: 50.mm)).ordered
       end
     end
   end

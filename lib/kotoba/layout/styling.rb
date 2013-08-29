@@ -3,7 +3,7 @@ class Kotoba::Layout
     attr_reader :page_range
 
     OPTIONS = %w(font size color align direction character_spacing line_height
-      style prefix)
+      style indent prefix)
 
     OPTIONS.each do |option|
       attr_writer option
@@ -23,6 +23,7 @@ class Kotoba::Layout
         hash[:color] = color
         hash[:style] = style unless style.empty?
         hash[:leading] = line_height
+        hash[:indent_paragraphs] = indent
       end
     end
 
@@ -48,6 +49,7 @@ class Kotoba::Layout
       @character_spacing = 0
       @line_height = 12.pt
       @style = []
+      @indent = 0.mm
       @prefix = ""
     end
   end
