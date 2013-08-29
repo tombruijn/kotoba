@@ -14,7 +14,7 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
-  describe "plain text" do
+  describe "paragraph" do
     let(:text) { "text\n\ntext\n\ntext\n\ntext" }
 
     it "should create a paragraph" do
@@ -65,7 +65,7 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
-  describe "headings" do
+  describe "heading" do
     let(:text) { "## header *emphasis*" }
     before(:all) { Kotoba.config.layout.heading(2) { |h| h.font = "Courier" } }
 
@@ -97,7 +97,7 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
-  describe "links" do
+  describe "link" do
     let(:text) {
       "normal text [some link](http://url.domain) "\
       "[another link](http://url.link'/ \"Title\") more text"
@@ -111,7 +111,7 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
-  describe "code" do
+  describe "code block" do
     let(:text) { "normal text\n\n    code\n\nmore text" }
 
     it "should create code block" do
@@ -133,7 +133,7 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
-  describe "quotes" do
+  describe "quote block" do
     let(:text) { "text\n\n> block\n> quote\n> for you\n\nmore text" }
     before(:all) { Kotoba.config.layout.quote { |q| q.indent = 5.cm } }
 
@@ -145,7 +145,7 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
-  describe ".to_prawn_ol" do
+  describe "ordered list" do
     let(:text) { "\n1. one\n2. two\n3. three\n" }
 
     it "should every list item" do
@@ -183,7 +183,7 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
-  describe ".to_prawn_ul" do
+  describe "unordered list" do
     let(:text) { "\n- one\n- two\n- three\n" }
 
     it "should every list item" do
