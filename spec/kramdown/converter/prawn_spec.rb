@@ -65,6 +65,24 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
+  describe "headings" do
+    let(:text) { "## header *emphasis*" }
+    before(:all) { Kotoba.config.layout.heading(2) { |h| h.font = "Courier" } }
+
+    it "should add heading with style" do
+      prawn.should_receive(:text).
+        with("header <i>emphasis</i>", hash_including(font: "Courier"))
+    end
+
+    it "should register the heading in the outline" do
+      prawn.should_receive(:register_heading).with(hash_including(
+        name: "header emphasis",
+        level: 2,
+        page: 1
+      ))
+    end
+  end
+
   describe "emphasis and strong text" do
     let(:text) {
       "text _emphasis text_ normal text **strong text** _emphasis, "\

@@ -56,6 +56,15 @@ module Kramdown::Converter
     end
 
     def convert_header(el, options = {})
+      style = style_for(:heading, el.options[:level])
+      text = convert_children(el.children).join
+      prawn.text text, style
+
+      prawn.register_heading(
+        name: strip_tags(text),
+        level: el.options[:level],
+        page: prawn.page_count
+      )
     end
 
     def convert_hr(el, options = {})
@@ -183,7 +192,7 @@ module Kramdown::Converter
     end
 
     def style_for(element, selector = nil)
-      layout_for(element).to_h.merge(inline_format: true)
+      layout_for(element, selector).to_h.merge(inline_format: true)
     end
 
     def style_for_paragraph(i, indenting)
@@ -207,6 +216,10 @@ module Kramdown::Converter
 
     def format_prefix(prefix)
       (prefix || "").gsub("{n}", @ol_index.to_s)
+    end
+
+    def strip_tags(string)
+      string.gsub(/<[^>]+>([^<\/]+)<\/[^>]+>/, '\1')
     end
   end
 end
