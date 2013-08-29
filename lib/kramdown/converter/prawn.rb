@@ -105,6 +105,8 @@ module Kramdown::Converter
     end
 
     def convert_a(el, options = {})
+      "<link href='#{URI.escape(el.attr["href"], /'/)}'>"\
+      "#{convert_children(el.children).join}</link>"
     end
 
     def convert_img(el, options = {})

@@ -79,6 +79,20 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
+  describe "links" do
+    let(:text) {
+      "normal text [some link](http://url.domain) "\
+      "[another link](http://url.link'/ \"Title\") more text"
+    }
+
+    it "should add links" do
+      prawn.should_receive(:text).with(
+        "normal text <link href='http://url.domain'>some link</link> "\
+        "<link href='http://url.link%27/'>another link</link> more text",
+        kind_of(Hash)).ordered
+    end
+  end
+
   describe "code" do
     let(:text) { "normal text\n\n    code\n\nmore text" }
 
