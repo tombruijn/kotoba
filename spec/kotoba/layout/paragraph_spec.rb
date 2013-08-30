@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe Kotoba::Layout::Paragraph do
-  before do
+  before :all do
     @paragraph = Kotoba::Layout::Paragraph.new
     @paragraph.indent = true
     @paragraph.indent_with = 1
@@ -13,5 +13,19 @@ describe Kotoba::Layout::Paragraph do
   its(:indent_with) { should == 1 }
   its(:book_indent) { should be_false }
 
-  pending ".to_hash"
+  describe ".to_h" do
+    subject { @paragraph.to_h }
+
+    context "with indent" do
+      before { @paragraph.indent = true }
+
+      it { should == { indent_paragraphs: 1 } }
+    end
+
+    context "without indent" do
+      before { @paragraph.indent = false }
+
+      it { should be_empty }
+    end
+  end
 end
