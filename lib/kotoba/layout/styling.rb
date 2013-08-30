@@ -63,7 +63,7 @@ class Kotoba::Layout
       @character_spacing = 0
       @line_height = 12.pt
       @style = []
-      @indent = 0.mm
+      @indent = 0.0
       @prefix = ""
     end
   end

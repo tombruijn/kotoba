@@ -10,7 +10,7 @@ module Kramdown::Converter
       super(root, options)
       @prawn = prawn
       @indent = 2
-      reset_paragraph_count
+      reset_paragraph_count!
     end
 
     def self.convert(tree, options = {}, prawn)
@@ -32,13 +32,15 @@ module Kramdown::Converter
       el.value
     end
 
-    def convert_p(el, options = {})
+    def convert_p(el, inherited_style = {})
       @paragraph_count += 1
-      indent = options.delete(:indent_paragraphs)
-      reset_paragraph_count if indent === false
 
-      style = style_for_paragraph(@paragraph_count, indent)
-      style = options.merge(style)
+      style = if inherited_style.empty?
+        style_for_paragraph(@paragraph_count)
+      else
+        reset_paragraph_count!
+        inherited_style
+      end
       prefix = format_prefix(style[:prefix])
       prawn.text "#{prefix}#{convert_children(el.children).join}", style
     end
@@ -54,8 +56,7 @@ module Kramdown::Converter
 
     def convert_blockquote(el, options = {})
       style = style_for(:quote)
-      convert_children(el.children,
-        indent_paragraphs: style[:indent_paragraphs])
+      convert_children(el.children, style)
     end
 
     def convert_header(el, options = {})
@@ -76,18 +77,15 @@ module Kramdown::Converter
 
     def convert_ul(el, options = {})
       @ol_index = 0
-      prefix = ""
-      prefix = "{n}. " if el.type == :ol
-      prefix = "- " if el.type == :ul
-      convert_children(el.children, { prefix: prefix })
+      style = style_for(el.type == :ol ? :ordered_list : :unordered_list)
+      convert_children(el.children, style)
     end
     alias :convert_ol :convert_ul
     alias :convert_dl :convert_ul
 
     def convert_li(el, options = {})
       @ol_index += 1
-      style = style_for(:list).to_h.merge(prefix: options[:prefix])
-      convert_children(el.children, style)
+      convert_children(el.children, options)
     end
     alias :convert_dd :convert_li
 
@@ -212,24 +210,26 @@ module Kramdown::Converter
       layout_for(element, selector).to_h.merge(inline_format: true)
     end
 
-    def style_for_paragraph(i, fixed_indent = nil)
-      options = layout_for(:default).to_h.merge(inline_format: true)
-      if fixed_indent
-        options.merge!(indent_paragraphs: fixed_indent)
-      else
-        style = layout_for(:paragraph)
-        # Normal paragraph indenting
-        indent = style.indent
-        # Book indent: Do not indent first paragraph in section
-        if style.book_indent
-          indent = indent && i > 1
-        end
-        options.merge!(style.to_h) if indent
+    def style_for_paragraph(i)
+      style = style_for(:default)
+      paragraph_style = layout_for(:paragraph)
+      if indent_paragraph?(i, paragraph_style)
+        style.merge!(paragraph_style.to_h)
       end
-      options
+      style
     end
 
-    def reset_paragraph_count
+    def indent_paragraph?(i, style)
+      # Normal paragraph indenting
+      indent = style.indent
+      # Book indent: Do not indent first paragraph in a section
+      if style.book_indent
+        indent = indent && i > 1
+      end
+      indent
+    end
+
+    def reset_paragraph_count!
       @paragraph_count = 0
     end
 

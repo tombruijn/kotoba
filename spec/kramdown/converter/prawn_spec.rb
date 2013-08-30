@@ -155,7 +155,7 @@ describe Kramdown::Converter::Prawn do
     end
 
     context "with custom prefix" do
-      before(:all) { Kotoba.config.layout.list.prefix = "{n} ) " }
+      before(:all) { Kotoba.config.layout.ordered_list.prefix = "{n} ) " }
 
       it "should use prefix" do
         prawn.should_receive(:text).with("1 ) one", kind_of(Hash)).ordered
@@ -171,9 +171,11 @@ describe Kramdown::Converter::Prawn do
           l.paragraph do |p|
             p.indent = true
             p.indent_with = 50.mm
+            p.book_indent = false
           end
-          l.list do |l|
+          l.ordered_list do |l|
             l.indent = 100.mm
+            l.prefix = "{n}. "
           end
         end
       end
@@ -201,6 +203,17 @@ describe Kramdown::Converter::Prawn do
       prawn.should_receive(:text).with("- two", kind_of(Hash)).ordered
       prawn.should_receive(:text).with("- three", kind_of(Hash)).ordered
     end
+
+    context "with custom prefix" do
+      before(:all) { Kotoba.config.layout.unordered_list.prefix = "-> " }
+
+      it "should use prefix" do
+        prawn.should_receive(:text).with("-> one", kind_of(Hash)).ordered
+        prawn.should_receive(:text).with("-> two", kind_of(Hash)).ordered
+        prawn.should_receive(:text).with("-> three", kind_of(Hash)).ordered
+      end
+    end
+
   end
 
   describe "entities" do
