@@ -32,7 +32,7 @@ module Kotoba::Export
     end
 
     def register_fonts!
-      Kotoba.config.fonts.each do |font|
+      Kotoba.config.fonts.each do |font_name, font|
         font_families.update(font.name => font.types)
       end
     end

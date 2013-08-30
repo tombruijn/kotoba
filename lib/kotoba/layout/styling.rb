@@ -26,7 +26,7 @@ class Kotoba::Layout
     #
     def to_h
       {}.tap do |hash|
-        hash[:font] = font if using_prawn_font?
+        hash[:font] = font if font_available?
         hash[:size] = size
         hash[:color] = color
         hash[:align] = align
@@ -45,8 +45,16 @@ class Kotoba::Layout
       Kotoba.config.layout_for_page(page_range).default
     end
 
+    def font_available?
+      using_prawn_font? || font_registered?
+    end
+
     def using_prawn_font?
       Prawn::Font::AFM::BUILT_INS.include?(font)
+    end
+
+    def font_registered?
+      Kotoba.config.fonts.key?(font)
     end
   end
 

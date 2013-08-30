@@ -15,7 +15,7 @@ module Kotoba
       @creator = "Kotoba"
       @producer = "Kotoba"
       @metadata = {}
-      @fonts = []
+      @fonts = {}
 
       @support_sections = true
       @section_spacing = 5.mm
@@ -115,7 +115,7 @@ module Kotoba
     #   }
     #
     def add_font(name, types)
-      @fonts << Font.new(name, types)
+      @fonts[name] = Font.new(name, types)
     end
 
     # Checks the required configuration and throws an error if it is incomplete
