@@ -41,16 +41,17 @@ module Kramdown::Converter
         inherited_style
       end
       prefix = format_prefix(style[:prefix])
-      prawn.text "#{prefix}#{convert_children(el.children).join}", style
+      write_text "#{prefix}#{convert_children(el.children).join}", style
     end
 
     def convert_codespan(el, options = {})
-      inline_formatting_for(:code, el, options)
+      style = style_for(:code)
+      inline_format(el, style)
     end
 
     def convert_codeblock(el, options = {})
       style = style_for(:code)
-      prawn.text el.value, style
+      write_text el.value, style
     end
 
     def convert_blockquote(el, options = {})
@@ -61,7 +62,7 @@ module Kramdown::Converter
     def convert_header(el, options = {})
       style = style_for(:heading, el.options[:level])
       text = convert_children(el.children).join
-      prawn.text text, style
+      write_text text, style
 
       prawn.register_heading(
         name: strip_tags(text),
@@ -167,6 +168,12 @@ module Kramdown::Converter
 
     protected
 
+    def write_text(text, style)
+      prawn.font style[:font] do
+        prawn.text text, style
+      end
+    end
+
     def convert_children(children, options = {})
       results = []
       children.each do |child|
@@ -175,25 +182,35 @@ module Kramdown::Converter
       results
     end
 
-    def inline_formatting_for(element_type, el, options = {})
-      layout = layout_for(element_type)
+    def inline_format(el, style = {})
+      element = if el.children.empty?
+        el.value
+      else
+        convert_children(el.children).join
+      end
 
-      if layout.style.include?(:italic) || layout.style.include?("italic")
-        element = "<i>#{element}</i>"
+      if style[:style]
+        element = "<i>#{element}</i>" if style[:style].include?(:italic)
+        element = "<b>#{element}</b>" if style[:style].include?(:bold)
       end
-      if layout.style.include?(:bold) || layout.style.include?("bold")
-        element = "<b>#{element}</b>"
+      if style[:color]
+        element = "<color rgb='#{style[:color]}'>#{element}</color>"
       end
-      element = "<color rgb='#{layout.color}'>#{element}</color>"
-      element = "<font name='#{layout.font}' size='#{layout.size}' "\
-        "character_spacing='#{layout.character_spacing}'>#{el.value}</font>"
+
+      element = "<font" +
+        (" size='#{style[:size]}'" if style[:size]).to_s +
+        (" character_spacing='#{style[:character_spacing]}'" if style[:character_spacing]).to_s +
+        (" name='#{style[:font]}'" if style[:font]).to_s +
+        ">#{element}</font>"
+
       element
     end
 
     # Returns the layout configuration for a specific element type
     #
     # @param element [Symbol] element type
-    # @param selector [Object] sub selector for type (e.g. 1 for heading level 1)
+    # @param selector [Object] sub selector for type
+    #   (e.g. 1 for heading level 1)
     # @return [Object] a Kotoba::Layout subclass
     #
     def layout_for(element, selector = nil)

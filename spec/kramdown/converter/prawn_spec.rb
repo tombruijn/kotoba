@@ -126,7 +126,7 @@ describe Kramdown::Converter::Prawn do
 
     it "should call inline formatting" do
       Kramdown::Converter::Prawn.any_instance.
-        stub(inline_formatting_for: "<style>inline code</style>")
+        stub(inline_format: "<style>inline code</style>")
       prawn.should_receive(:text).with(
         "normal text <style>inline code</style> more text",
         kind_of(Hash))

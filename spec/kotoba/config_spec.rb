@@ -127,7 +127,7 @@ describe Kotoba::Config do
         italic: "OpenSans-Italic.ttf"
       }
     end
-    subject { @config.fonts.first }
+    subject { @config.fonts["OpenSans"] }
 
     it { should be_instance_of Kotoba::Font}
     its(:name) { should == "OpenSans" }

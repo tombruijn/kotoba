@@ -28,7 +28,7 @@ class Kotoba::Layout
       {}.tap do |hash|
         hash[:font] = font if font_available?
         hash[:size] = size
-        hash[:color] = color
+        hash[:color] = color unless color.empty?
         hash[:align] = align
         hash[:direction] = direction
         hash[:character_spacing] = character_spacing
@@ -67,7 +67,7 @@ class Kotoba::Layout
       super(args)
       @font = "Times-Roman"
       @size = 12.pt
-      @color = "000000"
+      @color = ""
       @align = :left # left/right/center/justify
       @direction = :ltr # ltr/rtl
       @character_spacing = 0
