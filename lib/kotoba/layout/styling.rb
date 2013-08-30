@@ -1,5 +1,7 @@
 class Kotoba::Layout
   class Styling
+    # page_range is used to call the default style fallback defined for that
+    # page range.
     attr_reader :page_range
 
     OPTIONS = %w(font size color align direction character_spacing line_height

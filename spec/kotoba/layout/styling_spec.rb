@@ -125,9 +125,6 @@ describe Kotoba::Layout::Styling do
     its(:line_height) { should == 12.pt }
     its(:style) { should be_empty }
     its(:indent) { should == 0.mm }
-
-    pending "not yet supported" do
-      its(:prefix) { should be_empty }
-    end
+    its(:prefix) { should be_empty }
   end
 end
