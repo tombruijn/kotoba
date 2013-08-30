@@ -38,8 +38,8 @@ module Kramdown::Converter
       reset_paragraph_count if indent === false
 
       style = style_for_paragraph(@paragraph_count, indent)
-      style.merge(options)
-      prefix = format_prefix(options[:prefix])
+      style = options.merge(style)
+      prefix = format_prefix(style[:prefix])
       prawn.text "#{prefix}#{convert_children(el.children).join}", style
     end
 

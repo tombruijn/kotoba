@@ -27,10 +27,7 @@ describe Kotoba::Layout::Styling do
     its(:line_height) { should == 20.pt }
     its(:style) { should == ["bold", "italic"] }
     its(:indent) { should == 1.cm }
-
-    pending "not yet supported" do
-      its(:prefix) { should == "In the beginning" }
-    end
+    its(:prefix) { should == "In the beginning" }
 
     describe ".to_h" do
       subject { @styling.to_h }
@@ -47,10 +44,7 @@ describe Kotoba::Layout::Styling do
       its([:leading]) { should == 20.pt }
       its([:style]) { should == ["bold", "italic"] }
       its([:indent_paragraphs]) { should == 1.cm }
-
-      pending "not yet supported" do
-        its(:prefix) { should == "In the beginning" }
-      end
+      its([:prefix]) { should == "In the beginning" }
     end
   end
 
@@ -66,10 +60,7 @@ describe Kotoba::Layout::Styling do
     its(:line_height) { should == 12.pt }
     its(:style) { should be_empty }
     its(:indent) { should == 0.mm }
-
-    pending "not yet supported" do
-      its(:prefix) { should be_empty }
-    end
+    its(:prefix) { should be_empty }
 
     describe ".to_h" do
       subject { @styling.to_h }
@@ -83,10 +74,7 @@ describe Kotoba::Layout::Styling do
       its([:leading]) { should == 12.pt }
       it { should_not have_key :style }
       its([:indent_paragraphs]) { should == 0.mm }
-
-      pending "not yet supported" do
-        its(:prefix) { should == "In the beginning" }
-      end
+      it { should_not have_key :prefix }
     end
   end
 

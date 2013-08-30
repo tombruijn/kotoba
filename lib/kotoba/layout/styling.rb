@@ -30,6 +30,7 @@ class Kotoba::Layout
         hash[:leading] = line_height
         hash[:style] = style unless style.empty?
         hash[:indent_paragraphs] = indent
+        hash[:prefix] = prefix unless prefix.empty?
       end
     end
 

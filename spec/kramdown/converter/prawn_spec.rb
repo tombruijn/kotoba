@@ -154,6 +154,16 @@ describe Kramdown::Converter::Prawn do
       prawn.should_receive(:text).with("3. three", kind_of(Hash)).ordered
     end
 
+    context "with custom prefix" do
+      before(:all) { Kotoba.config.layout.list.prefix = "{n} ) " }
+
+      it "should use prefix" do
+        prawn.should_receive(:text).with("1 ) one", kind_of(Hash)).ordered
+        prawn.should_receive(:text).with("2 ) two", kind_of(Hash)).ordered
+        prawn.should_receive(:text).with("3 ) three", kind_of(Hash)).ordered
+      end
+    end
+
     context "between paragraphs" do
       let(:text) { "paragraph\n\n1. one\n2. two\n3. three\n\nend" }
       before :all do
