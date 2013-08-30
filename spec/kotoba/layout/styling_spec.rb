@@ -31,6 +31,27 @@ describe Kotoba::Layout::Styling do
     pending "not yet supported" do
       its(:prefix) { should == "In the beginning" }
     end
+
+    describe ".to_h" do
+      subject { @styling.to_h }
+
+      pending "not yet supporting non-prawn fonts" do
+        its([:font]) { should == "My font" }
+      end
+
+      its([:size]) { should == 15.pt }
+      its([:color]) { should == "000000" }
+      its([:align]) { should == :right }
+      its([:direction]) { should == :rtl }
+      its([:character_spacing]) { should == 1.pt }
+      its([:leading]) { should == 20.pt }
+      its([:style]) { should == ["bold", "italic"] }
+      its([:indent_paragraphs]) { should == 1.cm }
+
+      pending "not yet supported" do
+        its(:prefix) { should == "In the beginning" }
+      end
+    end
   end
 
   describe "without styling, should fall back on default" do
@@ -48,6 +69,24 @@ describe Kotoba::Layout::Styling do
 
     pending "not yet supported" do
       its(:prefix) { should be_empty }
+    end
+
+    describe ".to_h" do
+      subject { @styling.to_h }
+
+      its([:font]) { should == "Times-Roman" }
+      its([:size]) { should == 12.pt }
+      its([:color]) { should == "000000" }
+      its([:align]) { should == :left }
+      its([:direction]) { should == :ltr }
+      its([:character_spacing]) { should == 0 }
+      its([:leading]) { should == 12.pt }
+      it { should_not have_key :style }
+      its([:indent_paragraphs]) { should == 0.mm }
+
+      pending "not yet supported" do
+        its(:prefix) { should == "In the beginning" }
+      end
     end
   end
 

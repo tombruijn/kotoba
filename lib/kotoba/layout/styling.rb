@@ -16,13 +16,19 @@ class Kotoba::Layout
       @page_range = page_range
     end
 
+    # @return [Hash] Hash containing prawn compatible keys and values for style
+    #   objects.
+    #
     def to_h
       {}.tap do |hash|
         hash[:font] = font if using_prawn_font?
         hash[:size] = size
         hash[:color] = color
-        hash[:style] = style unless style.empty?
+        hash[:align] = align
+        hash[:direction] = direction
+        hash[:character_spacing] = character_spacing
         hash[:leading] = line_height
+        hash[:style] = style unless style.empty?
         hash[:indent_paragraphs] = indent
       end
     end
@@ -38,6 +44,10 @@ class Kotoba::Layout
     end
   end
 
+  # Default styling class that is called when a style is undefined.
+  # Define the default styling through the layout object like any other styling
+  # using `Kotoba.config.layout.default { |d| ... }`
+  #
   class DefaultStyling < Styling
     def initialize(*args)
       super(args)
