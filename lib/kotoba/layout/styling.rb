@@ -12,8 +12,11 @@ class Kotoba::Layout
       end
     end
 
-    def initialize(page_range = :all)
+    def initialize(page_range = :all, options = {})
       @page_range = page_range
+      options.each do |key, value|
+        instance_variable_set("@#{key}", value)
+      end
     end
 
     # @return [Hash] Hash containing prawn compatible keys and values for style

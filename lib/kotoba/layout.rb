@@ -7,7 +7,7 @@ module Kotoba
     property :height, :default => 0
 
     attr_reader :margin, :header, :footer, :paragraph, :headings,
-                :quote, :code, :list
+                :quote, :code, :ordered_list, :unordered_list
 
     def initialize(args = {})
       super(args)
@@ -98,10 +98,16 @@ module Kotoba
       @code
     end
 
-    def list
-      @list ||= Styling.new(page_range)
-      yield(@list) if block_given?
-      @list
+    def ordered_list
+      @ordered_list ||= Styling.new(page_range, prefix: "{n}. ")
+      yield(@ordered_list) if block_given?
+      @ordered_list
+    end
+
+    def unordered_list
+      @unordered_list ||= Styling.new(page_range, prefix: "- ")
+      yield(@unordered_list) if block_given?
+      @unordered_list
     end
 
     # Returns a hash with keys and values that should be given to prawn
