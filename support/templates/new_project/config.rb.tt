@@ -3,5 +3,4 @@ Kotoba.config do |config|
   config.authors = ["John Doe"]
   config.filename = "<%= @project_name %>"
   config.export_to :pdf
-  config.export_to :text
 end
