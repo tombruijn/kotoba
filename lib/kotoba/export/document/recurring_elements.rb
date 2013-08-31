@@ -44,10 +44,8 @@ class Kotoba::Export::Document
   # Will only add page number when numbering is active on the element.
   #
   # @param element [Kotoba::Layout::RecurringElement] a recurring element
-  # @param options [Hash] options that position the content,
-  #                       see bounding_box_on.
-  #                       Requires the options :page_number and :page_count
-  #                       as well.
+  # @param options [Hash] options that position the content, see
+  #  bounding_box_on. Requires the options :page_number and :page_count as well.
   #
   def numbering_for_recurring_element(element, options={})
     numbering = element.numbering
@@ -64,8 +62,8 @@ class Kotoba::Export::Document
   # Will only add content if any is configured.
   #
   # @param element [Kotoba::Layout::RecurringElement] a recurring element
-  # @param options [Hash] options that position the content,
-  #                       see bounding_box_on
+  # @param options [Hash] options that position the content, see
+  #  bounding_box_on.
   #
   def content_for_recurring_element(element, options={})
     return unless element.content
@@ -90,10 +88,10 @@ class Kotoba::Export::Document
   # start_count_at or document defaults.
   #
   # @param [Kotoba::Layout::RecurringElement::PageNumbering]
-  #        numbering configuration used for this numbering system
+  #  numbering configuration used for this numbering system.
   #
-  # @return [Hash] Hash containing details for page numbering
-  #                {number: 1, total: 2}
+  # @return [Hash] Hash containing details for page numbering, format:
+  #  { number: 1, total: 2 }
   #
   def set_page_counter(numbering)
     # Used to register all page numbering systems active

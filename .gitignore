@@ -1,5 +1,5 @@
 coverage
-rdoc
+yardoc
 .rspec
 Gemfile.lock
 spec/tmp
