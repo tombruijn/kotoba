@@ -53,7 +53,7 @@ describe Kotoba do
   describe ".export" do
     before :all do
       Kotoba.config do |config|
-        config.export_to :text
+        config.export_to :pdf
       end
     end
 

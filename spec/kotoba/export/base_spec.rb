@@ -3,9 +3,9 @@ require "spec_helper"
 describe Kotoba::Export::Base do
   describe "#get" do
     context "existing exporter" do
-      subject { Kotoba::Export::Base.get(:text) }
+      subject { Kotoba::Export::Base.get(:pdf) }
 
-      it { should == Kotoba::Export::Text }
+      it { should == Kotoba::Export::Pdf }
     end
 
     context "not existing exporter" do

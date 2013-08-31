@@ -6,5 +6,4 @@ Kotoba.config do |config|
   # Export
   config.filename = "my-loaded-book"
   config.export_to :pdf
-  config.export_to :text
 end

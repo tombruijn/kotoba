@@ -60,8 +60,7 @@ combination with the server.
 ### Exporting `kotoba export`
 
 The goal of Kotoba is to provide an easy way to export Markdown files to PDF.
-With the `kotoba export` command you will export your book to PDF
-(or plain text).
+With the `kotoba export` command you will export your book to PDF.
 
 An export will create a `build` directory in your project's root if none exists.
 It will place the export result into this directory when it is done.
@@ -73,13 +72,12 @@ It will place the export result into this directory when it is done.
 ## Supported exports
 
 - PDF (through Prawn)
-- Plain text
 
 ## Future features
 
 - Manage markdown files in an easy way.
 - Use your own editor!
-- Export to PDF (and plain text).
+- Export to PDF.
 - Generate a Table of Contents.
 - Customize the layout and styling of your book.
 - Add your own fonts to the PDF export.

@@ -8,7 +8,7 @@ describe Kotoba::Config do
         c.title = "My test book"
         c.authors = ["Tom de Bruijn"]
         c.filename = "my-test-book"
-        c.export_to :text
+        c.export_to :pdf
       end
     end
     subject { Kotoba.config }
@@ -16,7 +16,7 @@ describe Kotoba::Config do
     its(:title) { should == "My test book" }
     its(:authors) { should include "Tom de Bruijn" }
     its(:filename) { should == "my-test-book" }
-    its(:"exporters.first") { should be_instance_of Kotoba::Export::Text }
+    its(:"exporters.first") { should be_instance_of Kotoba::Export::Pdf }
   end
 
   describe ".layout" do
@@ -137,27 +137,36 @@ describe Kotoba::Config do
       Kotoba.config do |config|
         config.filename = "my-test-book"
         config.export_to :pdf
-        config.export_to :text do |exporter|
-          exporter.filename = "hello"
-          exporter.extension = "world"
-        end
       end
     end
-    subject { Kotoba.config.exporters }
+    subject { Kotoba.config.exporters.first }
 
     it "should return an exporter" do
-      subject.first.should be_kind_of Kotoba::Export::Base
-      subject.first.should be_instance_of Kotoba::Export::Pdf
+      should be_kind_of Kotoba::Export::Base
+      should be_instance_of Kotoba::Export::Pdf
     end
 
     it "should take defaults for exporters" do
-      subject.first.filename.should == "my-test-book"
-      subject.first.extension.should == :pdf
+      subject.filename.should == "my-test-book"
+      subject.extension.should == :pdf
     end
 
-    it "should override settings for exporters" do
-      subject.last.filename.should == "hello"
-      subject.last.extension.should == "world"
+    context "override settings" do
+      before :all do
+        Kotoba.clear_config!
+        Kotoba.config do |config|
+          config.filename = "my-test-book"
+          config.export_to :pdf do |exporter|
+            exporter.filename = "hello"
+            exporter.extension = "world"
+          end
+        end
+      end
+
+      it "should override settings for exporters" do
+        subject.filename.should == "hello"
+        subject.extension.should == "world"
+      end
     end
   end
 end
