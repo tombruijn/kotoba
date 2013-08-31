@@ -26,9 +26,9 @@ class Kotoba::Layout
     #
     def to_h
       {}.tap do |hash|
-        hash[:font] = font if using_prawn_font?
+        hash[:font] = font if font_available?
         hash[:size] = size
-        hash[:color] = color
+        hash[:color] = color unless color.empty?
         hash[:align] = align
         hash[:direction] = direction
         hash[:character_spacing] = character_spacing
@@ -45,8 +45,16 @@ class Kotoba::Layout
       Kotoba.config.layout_for_page(page_range).default
     end
 
+    def font_available?
+      using_prawn_font? || font_registered?
+    end
+
     def using_prawn_font?
       Prawn::Font::AFM::BUILT_INS.include?(font)
+    end
+
+    def font_registered?
+      Kotoba.config.fonts.key?(font)
     end
   end
 
@@ -59,7 +67,7 @@ class Kotoba::Layout
       super(args)
       @font = "Times-Roman"
       @size = 12.pt
-      @color = "000000"
+      @color = ""
       @align = :left # left/right/center/justify
       @direction = :ltr # ltr/rtl
       @character_spacing = 0

@@ -119,6 +119,27 @@ describe Kotoba::Config do
     end
   end
 
+  describe ".add_font" do
+    before :all do
+      @config = Kotoba::Config.new
+      @config.add_font "OpenSans", {
+        normal: "OpenSans-Regular.ttf",
+        italic: "OpenSans-Italic.ttf"
+      }
+    end
+    subject { @config.fonts["OpenSans"] }
+
+    it { should be_instance_of Kotoba::Font}
+    its(:name) { should == "OpenSans" }
+    its :types do
+      font_dir = File.join(Kotoba::ASSETS_DIR, Kotoba::Font::FONTS_DIR)
+      should == {
+        normal: File.join(font_dir, "OpenSans-Regular.ttf"),
+        italic: File.join(font_dir, "OpenSans-Italic.ttf")
+      }
+    end
+  end
+
   describe ".check_requirements" do
     let(:config) { Kotoba::Config.new }
 

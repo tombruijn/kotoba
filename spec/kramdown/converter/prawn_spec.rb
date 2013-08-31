@@ -12,6 +12,32 @@ describe Kramdown::Converter::Prawn do
       prawn.should_receive(:text).
         with("text", hash_including(inline_format: true))
     end
+
+    describe "custom fonts" do
+      let(:text) { "text using custom font" }
+      before do
+        Kotoba.config do |c|
+          c.add_font "Nobile", {
+            normal: "Nobile-Regular.ttf",
+            italic: "Nobile-Italic.ttf",
+            bold: "Nobile-Bold.ttf",
+            bold_italic: "Nobile-BoldItalic.ttf"
+          }
+          c.layout.default do |d|
+            d.font = "Nobile"
+          end
+        end
+        prawn.register_fonts!
+      end
+
+      it "should configure font" do
+        prawn.should_receive(:font).with("Nobile").and_call_original
+        prawn.should_receive(:text).
+          with("text using custom font", kind_of(Hash))
+      end
+
+      after(:all) { Kotoba.clear_config! }
+    end
   end
 
   describe "paragraph" do
@@ -126,7 +152,7 @@ describe Kramdown::Converter::Prawn do
 
     it "should call inline formatting" do
       Kramdown::Converter::Prawn.any_instance.
-        stub(inline_formatting_for: "<style>inline code</style>")
+        stub(inline_format: "<style>inline code</style>")
       prawn.should_receive(:text).with(
         "normal text <style>inline code</style> more text",
         kind_of(Hash))

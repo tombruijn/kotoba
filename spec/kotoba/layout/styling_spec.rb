@@ -83,7 +83,7 @@ describe Kotoba::Layout::Styling do
 
       its(:font) { should == "Times-Roman" }
       its(:size) { should == 12.pt }
-      its(:color) { should == "000000" }
+      its(:color) { should be_empty }
       its(:align) { should == :left }
       its(:direction) { should == :ltr }
       its(:character_spacing) { should == 0 }
@@ -97,7 +97,7 @@ describe Kotoba::Layout::Styling do
 
         its([:font]) { should == "Times-Roman" }
         its([:size]) { should == 12.pt }
-        its([:color]) { should == "000000" }
+        it { should_not have_key :color }
         its([:align]) { should == :left }
         its([:direction]) { should == :ltr }
         its([:character_spacing]) { should == 0 }
@@ -118,7 +118,7 @@ describe Kotoba::Layout::Styling do
     it { should be_kind_of Kotoba::Layout::Styling }
     its(:font) { should == "Times-Roman" }
     its(:size) { should == 12.pt }
-    its(:color) { should == "000000" }
+    its(:color) { should be_empty }
     its(:align) { should == :left }
     its(:direction) { should == :ltr }
     its(:character_spacing) { should == 0 }
