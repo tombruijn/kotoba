@@ -2,11 +2,13 @@ require "spec_helper"
 
 describe Kotoba::Export::Document do
   let(:document) { Kotoba::Export::Document.new(Kotoba.config.to_h) }
-  before { set_default_config }
+  before :all do
+    Kotoba.clear_config!
+    set_default_config
+  end
 
   describe "page size" do
     before do
-      Kotoba.clear_config!
       Kotoba.config do |c|
         @first_layout = c.layout_for 1 do |l|
           l.width = 10.cm
@@ -81,7 +83,6 @@ describe Kotoba::Export::Document do
   end
 
   describe "metadata" do
-    let(:document) { Kotoba::Export::Document.new(Kotoba.config.to_h) }
     before do
       Time.stub(:now => "stubbed time")
       Kotoba.config do |c|
@@ -110,6 +111,38 @@ describe Kotoba::Export::Document do
       before(:all) { Kotoba.config.metadata = {:Grok => "Test property"} }
 
       its([:Grok]) { should == "Test property" }
+    end
+  end
+
+  describe "fonts" do
+    before do
+      Kotoba.clear_config!
+      Kotoba.config do |c|
+        c.add_font "Nobile", {
+          normal: "Nobile-Regular.ttf",
+          italic: "Nobile-Italic.ttf",
+          bold: "Nobile-Bold.ttf",
+          bold_italic: "Nobile-BoldItalic.ttf"
+        }
+        c.layout.default do |d|
+          d.font = "Nobile"
+        end
+      end
+      document.register_fonts!
+    end
+
+    it "should add text with custom font" do
+      document.add_chapter double(source: [
+        "This text is printed in the Nobile font. Some _italic "\
+        "text_ and some __strong text__ and _**together**_."
+      ])
+
+      text = PDF::Inspector::Text.analyze(document.render)
+      fonts = text.font_settings.map { |e| e[:name].to_s.gsub(/\A\w+\+/, "") }
+      fonts.should include("Nobile-Regular")
+      fonts.should include("Nobile-Italic")
+      fonts.should include("Nobile-Bold")
+      fonts.should include("Nobile-BoldItalic")
     end
   end
 end
