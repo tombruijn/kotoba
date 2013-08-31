@@ -48,6 +48,9 @@ book/
     - 02_prelude.md
   - 02_hello/
     - 01_hello-world.md
+- assets/
+  - fonts/
+    - OpenSans-Regular.ttf
 ```
 
 Note: Kotoba uses a alphabetic sorting, which pretty closely resembles most
@@ -78,10 +81,10 @@ It will place the export result into this directory when it is done.
 - Manage markdown files in an easy way.
 - Use your own editor!
 - Export to PDF.
-- Generate a Table of Contents.
+- Generate a Table of Contents. (not yet!)
 - Customize the layout and styling of your book.
 - Add your own fonts to the PDF export.
-- Kotoba server (might be moved into its own gem)  
+- Kotoba server (will be moved into its own gem)  
   The server will allow for more easy browsing through your book using the
   metadata you can add to the markdown files.
   - A simple overview of all chapters.
@@ -121,12 +124,24 @@ Kotoba.config do |config|
   config.metadata = {
     :Foo => "Bar"
   }
+  # Start the first file of a directory on a new page
+  config.chapter_on_new_page = true
+  # Space between sections
+  config.section_spacing = 20.mm
 
   # Declare the filename you wish to have it export to
   config.filename = "preview-book"
-
   # Declare which exports to use
   config.export_to :pdf
+
+  # Add your own fonts
+  # Add the font files to `book/assets/fonts/`
+  config.add_font "OpenSans", {
+    normal: "OpenSans-Regular.ttf",
+    italic: "OpenSans-Italic.ttf",
+    bold: "OpenSans-Bold.ttf",
+    bold_italic: "OpenSans-BoldItalic.ttf"
+  }
 
   # Define the default style (optional)
   config.layout do |l|
@@ -146,17 +161,19 @@ Kotoba.config do |config|
 
     # Default styling for any text in the PDF
     l.default do |d|
-      d.font = "Times-Bold"
+      d.font = "Times-Bold" # Has to be a Prawn supplied font or your own.
       d.color = "FF0000"
       d.size = 11.5.pt
       d.line_height = 13.pt
-      d.style = [:bold] # bold, italic
+      d.style = [:bold] # bold, italic, not supported yet
     end
     
     # Styling for paragraphs
     # A paragraph is everything not a different element
     l.paragraph do |p|
-      p.indent = false
+      p.indent = false # true/false
+      p.indent_with = 5.mm # Distance to indent with
+      p.book_indent = true # true/false, don't indent first paragraph (novels)
     end
 
     # Define styling for headings
@@ -168,6 +185,28 @@ Kotoba.config do |config|
       h.size = 20.pt
     end
 
+    # Unordered lists
+    l.unordered_list do |li|
+      li.indent = 5.mm
+      li.prefix = "-> " # Default: "- "
+    end
+
+    # Ordered lists
+    l.ordered_list do |li|
+      li.indent = 5.mm
+      li.prefix = "{n}) " # Default: "{n}. "
+    end
+
+    # Inline code and code blocks
+    l.code do |c|
+      c.indent = 10.mm
+    end
+
+    # Blockquotes
+    l.quote do |q|
+      q.indent = 20.mm
+    end
+
     # Define headers and footers
     # Headers and footers are recurring elements that will be placed on
     # every page
@@ -176,6 +215,7 @@ Kotoba.config do |config|
       h.page_numbering do |n|
         n.active = true # true/false, default: false
         n.align = :right # left, center, right
+        n.string = "Page <page> of <total>"
       end
       # Add additional content to the header
       # Will give the prawn object that can be used to write text, etc.
@@ -199,6 +239,7 @@ Kotoba.config do |config|
   end
 
   # Special layout for the first page
+  # layout_for accepts integers, ranges and arrays of integers
   config.layout_for 1 do |l|
     l.paragraph do |p|
       p.indent = true
@@ -214,3 +255,7 @@ end
 ## License
 
 Kotoba released under the MIT License. See the bundled LICENSE file for details.
+
+Fonts added to the repository are used for testing only and have their own
+license. These licenses are in the same directories as the fonts. They are not
+meant to expand Prawn's default fontset.
