@@ -62,10 +62,6 @@ describe Kotoba::Layout::Styling do
       describe ".to_h" do
         subject { @styling.to_h }
 
-        pending "not yet supporting non-prawn fonts" do
-          its([:font]) { should == "My font" }
-        end
-
         its([:size]) { should == 15.pt }
         its([:color]) { should == "000000" }
         its([:align]) { should == :right }
@@ -75,6 +71,27 @@ describe Kotoba::Layout::Styling do
         its([:style]) { should == ["bold", "italic"] }
         its([:indent_paragraphs]) { should == 1.cm }
         its([:prefix]) { should == "In the beginning" }
+
+        context "with known prawn font" do
+          before { @styling.font = "Courier" }
+
+          its([:font]) { should == "Courier" }
+        end
+
+        context "with custom registered font" do
+          before do
+            Kotoba.config.add_font "OpenSans", {}
+            @styling.font = "OpenSans"
+          end
+
+          its([:font]) { should == "OpenSans" }
+        end
+
+        context "with unknown font" do
+          before { @styling.font = "Unknown font" }
+
+          it { should_not have_key :font }
+        end
       end
     end
 
@@ -108,8 +125,6 @@ describe Kotoba::Layout::Styling do
       end
     end
   end
-
-  pending ".using_prawn_font?"
 
   describe Kotoba::Layout::DefaultStyling do
     before(:all) { @default = Kotoba::Layout::DefaultStyling.new }
