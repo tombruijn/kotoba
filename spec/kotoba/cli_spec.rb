@@ -19,6 +19,7 @@ describe Kotoba::Cli do
       test_project = File.join(TMP_DIR, "test_project", "book")
       Dir.should exist(test_project)
       Dir.should exist(File.join(test_project, "chapters"))
+      Dir.should exist(File.join(test_project, "assets", "fonts"))
     end
 
     context "gems" do
