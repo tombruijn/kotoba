@@ -9,7 +9,6 @@ module Kramdown::Converter
     def initialize(root, options, prawn)
       super(root, options)
       @prawn = prawn
-      @indent = 2
       reset_paragraph_count!
     end
 
@@ -212,21 +211,9 @@ module Kramdown::Converter
 
     def style_for_paragraph(i)
       style = style_for(:default)
-      paragraph_style = layout_for(:paragraph)
-      if indent_paragraph?(i, paragraph_style)
-        style.merge!(paragraph_style.to_h)
-      end
+      paragraph = layout_for(:paragraph)
+      style.merge!(paragraph.to_h) if paragraph.indent?(i)
       style
-    end
-
-    def indent_paragraph?(i, style)
-      # Normal paragraph indenting
-      indent = style.indent
-      # Book indent: Do not indent first paragraph in a section
-      if style.book_indent
-        indent = indent && i > 1
-      end
-      indent
     end
 
     def reset_paragraph_count!
