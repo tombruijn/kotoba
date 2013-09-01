@@ -27,7 +27,6 @@ module Kotoba
 end
 
 require "hashie"
-require "htmlentities"
 require "prawn"
 require "prawn/measurement_extensions"
 require "kramdown/kramdown"
