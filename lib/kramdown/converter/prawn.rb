@@ -4,12 +4,13 @@ module Kramdown::Converter
     attr_reader :prawn
     # Integer value that counts the number of paragraphs in one section
     # @see convert_p
-    attr_reader :paragraph_count
+    attr_reader :paragraph_count, :heading_count
 
     def initialize(root, options, prawn)
       super(root, options)
       @prawn = prawn
       reset_paragraph_count!
+      @heading_count = Hash.new { |hash, key| hash[key] = 0 }
     end
 
     def self.convert(tree, options = {}, prawn)
@@ -40,8 +41,8 @@ module Kramdown::Converter
         reset_paragraph_count!
         inherited_style
       end
-      prefix = format_prefix(style[:prefix])
-      write_text "#{prefix}#{convert_children(el.children).join}", style
+      style.merge!(count: inherited_style[:count] || @paragraph_count)
+      write_text(to_text(el, style), style)
     end
 
     def convert_codespan(el, options = {})
@@ -60,13 +61,15 @@ module Kramdown::Converter
     end
 
     def convert_header(el, options = {})
-      style = style_for(:heading, el.options[:level])
-      text = convert_children(el.children).join
+      level = el.options[:level]
+      style = style_for(:heading, level)
+      @heading_count[level] += 1
+      text = to_text(el, style.merge(count: @heading_count[level]))
       write_text text, style
 
       prawn.register_heading(
         name: strip_tags(text),
-        level: el.options[:level],
+        level: level,
         page: prawn.page_count
       )
     end
@@ -83,9 +86,9 @@ module Kramdown::Converter
     alias :convert_ol :convert_ul
     alias :convert_dl :convert_ul
 
-    def convert_li(el, options = {})
+    def convert_li(el, style = {})
       @ol_index += 1
-      convert_children(el.children, options)
+      convert_children(el.children, style.merge(count: @ol_index))
     end
     alias :convert_dd :convert_li
 
@@ -168,6 +171,11 @@ module Kramdown::Converter
 
     protected
 
+    def to_text(el, style)
+      prefix = format_prefix(style[:prefix], style)
+      "#{prefix}#{convert_children(el.children).join}"
+    end
+
     def write_text(text, style)
       prawn.font style[:font] do
         prawn.text text, style
@@ -236,8 +244,9 @@ module Kramdown::Converter
       @paragraph_count = 0
     end
 
-    def format_prefix(prefix)
-      (prefix || "").gsub("{n}", @ol_index.to_s)
+    def format_prefix(prefix, style)
+      count = style[:count]
+      (prefix || "").gsub("{n}", count.to_s)
     end
 
     def strip_tags(string)

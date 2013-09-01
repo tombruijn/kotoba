@@ -107,6 +107,40 @@ describe Kramdown::Converter::Prawn do
         page: 1
       ))
     end
+
+    describe "prefix" do
+      let(:text) { "# first\n\n## second\n\n# first again\n\n### third" }
+      before :all do
+        Kotoba.config.layout.heading(1) { |h| h.prefix = "{n}. " }
+        Kotoba.config.layout.heading(2) { |h| h.prefix = "{n}! " }
+        Kotoba.config.layout.heading(3) { |h| h.prefix = "{n}? " }
+      end
+
+      it "should add a prefix" do
+        prawn.should_receive(:text).with("1. first", kind_of(Hash))
+        prawn.should_receive(:text).with("1! second", kind_of(Hash))
+        prawn.should_receive(:text).with("2. first again", kind_of(Hash))
+        prawn.should_receive(:text).with("1? third", kind_of(Hash))
+      end
+
+      context "sub levels" do
+        let(:text) {
+          "# first\n\n## second\n\n# first again\n\n## second again"\
+          "\n\n### third"
+        }
+
+        it "should count and reset sub levels" do
+          # This spec and the above spec can be merged if this one works
+          pending "not taking into account sublevels yet" do
+            prawn.should_receive(:text).with("1. first", kind_of(Hash))
+            prawn.should_receive(:text).with("1.1! second", kind_of(Hash))
+            prawn.should_receive(:text).with("2. first again", kind_of(Hash))
+            prawn.should_receive(:text).with("2.1. second again", kind_of(Hash))
+            prawn.should_receive(:text).with("2.1.1? third", kind_of(Hash))
+          end
+        end
+      end
+    end
   end
 
   describe "emphasis and strong text" do
