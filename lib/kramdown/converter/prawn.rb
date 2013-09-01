@@ -197,8 +197,7 @@ module Kramdown::Converter
         element = "<color rgb='#{style[:color]}'>#{element}</color>"
       end
 
-      element = "<font" +
-        (" size='#{style[:size]}'" if style[:size]).to_s +
+      element = "<font size='#{style[:size]}'"
         (" character_spacing='#{style[:character_spacing]}'" if style[:character_spacing]).to_s +
         (" name='#{style[:font]}'" if style[:font]).to_s +
         ">#{element}</font>"

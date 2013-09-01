@@ -117,7 +117,7 @@ describe Kotoba::Layout::Styling do
         it { should_not have_key :color }
         its([:align]) { should == :left }
         its([:direction]) { should == :ltr }
-        its([:character_spacing]) { should == 0 }
+        it { should_not have_key :character_spacing }
         its([:leading]) { should == 12.pt }
         it { should_not have_key :style }
         its([:indent_paragraphs]) { should == 0.mm }

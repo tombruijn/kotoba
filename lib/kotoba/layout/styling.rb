@@ -31,7 +31,7 @@ class Kotoba::Layout
         hash[:color] = color unless color.empty?
         hash[:align] = align
         hash[:direction] = direction
-        hash[:character_spacing] = character_spacing
+        hash[:character_spacing] = character_spacing if character_spacing > 0
         hash[:leading] = line_height
         hash[:style] = style unless style.empty?
         hash[:indent_paragraphs] = indent
