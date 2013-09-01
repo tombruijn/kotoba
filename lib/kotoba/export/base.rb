@@ -80,3 +80,6 @@ module Kotoba
     end
   end
 end
+
+require "kotoba/export/document"
+require "kotoba/export/pdf"

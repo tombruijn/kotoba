@@ -1,3 +1,5 @@
+require "kramdown/kramdown"
+
 class Kotoba::Export::Document
   include Kotoba::Content
 
