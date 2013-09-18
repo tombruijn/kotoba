@@ -39,15 +39,19 @@ module Kotoba::Formatting
     inline_format_font(element, style)
   end
 
+  def inline_format_italic(element, style = {})
+    inline_format_with_tag(element, :i)
+  end
+
+  def inline_format_bold(element, style = {})
+    inline_format_with_tag(element, :b)
+  end
+
+  def inline_format_with_tag(element, tag)
+    "<#{tag}>#{element}</#{tag}>"
+  end
+
   protected
-
-  def inline_format_italic(element)
-    "<i>#{element}</i>"
-  end
-
-  def inline_format_bold(element)
-    "<b>#{element}</b>"
-  end
 
   def inline_format_color(element, color)
     "<color rgb='#{color}'>#{element}</color>"

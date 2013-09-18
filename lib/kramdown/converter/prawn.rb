@@ -143,9 +143,9 @@ module Kramdown::Converter
       raise "Raw not supported: #{el.inspect}"
     end
 
-    def convert_em(el, options = {})
+    def convert_em(el, style = {})
       tag = el.type == :em ? :i : :b
-      "<#{tag}>#{convert_children(el.children).join}</#{tag}>"
+      inline_format_with_tag to_text(el, style), tag
     end
     alias :convert_strong :convert_em
 
