@@ -98,7 +98,9 @@ module Kramdown::Converter
     end
 
     def convert_html_element(el, style = {})
-      content_tag to_text(el, style), (el.value || el.type), el.attr
+      string = content_tag to_text(el, style), (el.value || el.type), el.attr
+      write_text string, style if "somecheck" == true
+      string
     end
     alias :convert_strong :convert_html_element
     alias :convert_em :convert_html_element
@@ -176,7 +178,7 @@ module Kramdown::Converter
     end
 
     def write_text(text, style)
-      prawn.font style[:font] do
+      prawn.font style[:font] || layout.default.font do
         prawn.text text, style
       end
     end
@@ -189,6 +191,10 @@ module Kramdown::Converter
       results
     end
 
+    def layout
+      Kotoba.config.layout_for_page(prawn.page_number)
+    end
+
     # Returns the layout configuration for a specific element type
     #
     # @param element [Symbol] element type
@@ -197,7 +203,6 @@ module Kramdown::Converter
     # @return [Object] a Kotoba::Layout subclass
     #
     def layout_for(element, selector = nil)
-      layout = Kotoba.config.layout_for_page(prawn.page_number)
       if selector
         layout.send(element, selector)
       else

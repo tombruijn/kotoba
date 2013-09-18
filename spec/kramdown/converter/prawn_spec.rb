@@ -312,5 +312,18 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
+  describe "div" do
+    let(:text) {
+      "text\n\n<div class='block-something'>something in a div</div>"
+    }
+
+    it "description" do
+      prawn.should_receive(:text).with("text", kind_of(Hash))
+      prawn.should_receive(:text).
+        with("<div class='block-something'>something in a div</div>",
+          kind_of(Hash))
+    end
+  end
+
   after { out.to_prawn(prawn) }
 end
