@@ -14,9 +14,8 @@ Gem::Specification.new do |gem|
   gem.homepage      = "http://github.com/tombruijn/kotoba"
   gem.license       = "MIT"
 
-  gem.files         = `git ls-files`.split($\)
-  gem.executables   = gem.files.grep(%r{^bin/}).map { |f| File.basename(f) }
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.files         = `git ls-files -- lib bin support README.md LICENSE Gemfile`.split($\)
+  gem.test_files    = `git ls-files -- spec`.split($\)
   gem.name          = "kotoba"
   gem.require_paths = ["lib"]
   gem.executables   = ["kotoba"]
