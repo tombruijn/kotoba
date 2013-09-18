@@ -95,10 +95,13 @@ describe Kotoba::Layout::Styling do
       end
     end
 
-    describe "without styling, should fall back on default" do
-      before(:all) { @styling = Kotoba::Layout::Styling.new }
+    describe "without styling, should fall back on default for page" do
+      before :all do
+        Kotoba.config.layout_for(1..2).default.font = "Courier"
+        @styling = Kotoba::Layout::Styling.new(1..2)
+      end
 
-      its(:font) { should == "Times-Roman" }
+      its(:font) { should == "Courier" }
       its(:size) { should == 12.pt }
       its(:color) { should be_empty }
       its(:align) { should == :left }
@@ -112,7 +115,7 @@ describe Kotoba::Layout::Styling do
       describe ".to_h" do
         subject { @styling.to_h }
 
-        its([:font]) { should == "Times-Roman" }
+        its([:font]) { should == "Courier" }
         its([:size]) { should == 12.pt }
         it { should_not have_key :color }
         its([:align]) { should == :left }

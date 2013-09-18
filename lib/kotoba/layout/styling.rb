@@ -42,7 +42,7 @@ class Kotoba::Layout
     protected
 
     def default
-      Kotoba.config.layout_for_page(page_range).default
+      Kotoba.config.layout_for(page_range).default
     end
 
     def font_available?

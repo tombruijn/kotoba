@@ -68,7 +68,7 @@ module Kotoba
     # @yield [Kotoba::Layout] default layout object for configuration
     # @return [Kotoba::Layout] layout object
     #
-    def layout_for(page_range = :default)
+    def layout_for(page_range = :all)
       yield(@layout_for[page_range]) if block_given?
       @layout_for[page_range]
     end
@@ -81,8 +81,8 @@ module Kotoba
     # @return [Kotoba::Layout] layout object
     #
     def layout_for_page(page_number)
-      page_range = layout_key_for_page(page_number)
-      @layout_for[page_range]
+      page_key = layout_key_for_page(page_number)
+      @layout_for[page_key]
     end
 
     # Adds an exporter to the exporters list.
@@ -164,7 +164,7 @@ module Kotoba
       @layout_for.each_key do |key|
         return key if Array(key).include?(page_number)
       end
-      return :default
+      return :all
     end
 
     def valid_key(key)

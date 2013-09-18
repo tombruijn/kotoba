@@ -6,7 +6,7 @@ module Kotoba
     property :width, :default => 0
     property :height, :default => 0
 
-    attr_reader :margin, :header, :footer, :paragraph, :headings,
+    attr_reader :default, :margin, :header, :footer, :paragraph, :headings,
                 :quote, :code, :ordered_list, :unordered_list
 
     def initialize(args = {})
