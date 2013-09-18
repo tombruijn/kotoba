@@ -1,5 +1,7 @@
 module Kramdown::Converter
   class Prawn < Base
+    include Kotoba::Formatting
+
     # Prawn document, is called to add content
     attr_reader :prawn
     # Integer value that counts the number of paragraphs in one section
@@ -47,7 +49,7 @@ module Kramdown::Converter
 
     def convert_codespan(el, options = {})
       style = style_for(:code)
-      inline_format(el, style)
+      inline_format_element(el, style)
     end
 
     def convert_codeblock(el, options = {})
@@ -190,27 +192,14 @@ module Kramdown::Converter
       results
     end
 
-    def inline_format(el, style = {})
+    def inline_format_element(el, style = {})
       element = if el.children.empty?
         el.value
       else
         convert_children(el.children).join
       end
 
-      if style[:style]
-        element = "<i>#{element}</i>" if style[:style].include?(:italic)
-        element = "<b>#{element}</b>" if style[:style].include?(:bold)
-      end
-      if style[:color]
-        element = "<color rgb='#{style[:color]}'>#{element}</color>"
-      end
-
-      element = "<font size='#{style[:size]}'"
-        (" character_spacing='#{style[:character_spacing]}'" if style[:character_spacing]).to_s +
-        (" name='#{style[:font]}'" if style[:font]).to_s +
-        ">#{element}</font>"
-
-      element
+      inline_format(element, style)
     end
 
     # Returns the layout configuration for a specific element type
@@ -242,15 +231,6 @@ module Kramdown::Converter
 
     def reset_paragraph_count!
       @paragraph_count = 0
-    end
-
-    def format_prefix(prefix, style)
-      count = style[:count]
-      (prefix || "").gsub("{n}", count.to_s)
-    end
-
-    def strip_tags(string)
-      string.gsub(/<[^>]+>([^<\/]+)<\/[^>]+>/, '\1')
     end
   end
 end
