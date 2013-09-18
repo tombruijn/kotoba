@@ -42,14 +42,6 @@ module Kotoba::Formatting
     inline_format_font(element, style)
   end
 
-  def inline_format_italic(element, style = {})
-    inline_format_with_tag(element, :i)
-  end
-
-  def inline_format_bold(element, style = {})
-    inline_format_with_tag(element, :b)
-  end
-
   def inline_format_with_tag(element, tag, attributes = {})
     tag = tag_name(tag)
     "<#{tag}#{attributes_html(attributes)}>#{element}</#{tag}>"
