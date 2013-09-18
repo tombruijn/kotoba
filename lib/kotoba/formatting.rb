@@ -35,6 +35,7 @@ module Kotoba::Formatting
       element = inline_format_italic(element) if style[:style].include?(:italic)
       element = inline_format_bold(element) if style[:style].include?(:bold)
     end
+    # TODO
     element = inline_format_color(element, style[:color]) if style[:color]
     inline_format_font(element, style)
   end
@@ -47,11 +48,19 @@ module Kotoba::Formatting
     inline_format_with_tag(element, :b)
   end
 
-  def inline_format_with_tag(element, tag)
-    "<#{tag}>#{element}</#{tag}>"
+  def inline_format_with_tag(element, tag, attributes = {})
+    "<#{tag}#{attributes_html(attributes)}>#{element}</#{tag}>"
   end
 
   protected
+
+  def attributes_html(attributes)
+    "".tap do |string|
+      attributes.each do |key, value|
+        string << " #{key}='#{value}'"
+      end
+    end
+  end
 
   def inline_format_color(element, color)
     "<color rgb='#{color}'>#{element}</color>"

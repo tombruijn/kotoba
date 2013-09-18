@@ -49,6 +49,7 @@ module Kramdown::Converter
 
     def convert_codespan(el, options = {})
       style = style_for(:code)
+      # TODO
       inline_format_element(el, style)
     end
 
@@ -97,8 +98,8 @@ module Kramdown::Converter
     def convert_dt(el, options = {})
     end
 
-    def convert_html_element(el, options = {})
-      raise "HTML element not supported: #{el.inspect}"
+    def convert_html_element(el, style = {})
+      inline_format_with_tag to_text(el, style), el.value, el.attr
     end
 
     def convert_xml_comment(el, options = {})
@@ -192,6 +193,7 @@ module Kramdown::Converter
       results
     end
 
+    # TODO
     def inline_format_element(el, style = {})
       element = if el.children.empty?
         el.value

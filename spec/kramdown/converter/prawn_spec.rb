@@ -157,6 +157,20 @@ describe Kramdown::Converter::Prawn do
     end
   end
 
+  describe "inline formating" do
+    let(:text) {
+      "text <u>underline</u>, oh no <strikethrough>not this</strikethrough>"\
+      "text <sub>sub text</sub> <sup>super text</sup>"\
+      "<color rgb='FF0000'>red color!</color>"
+    }
+
+    it "should pass it along to prawn" do
+      prawn.should_receive(:text).with(
+        text,
+        kind_of(Hash))
+    end
+  end
+
   describe "link" do
     let(:text) {
       "normal text [some link](http://url.domain) "\
