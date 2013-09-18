@@ -98,7 +98,7 @@ module Kramdown::Converter
     end
 
     def convert_html_element(el, style = {})
-      inline_format_with_tag to_text(el, style), (el.value || el.type), el.attr
+      content_tag to_text(el, style), (el.value || el.type), el.attr
     end
     alias :convert_strong :convert_html_element
     alias :convert_em :convert_html_element

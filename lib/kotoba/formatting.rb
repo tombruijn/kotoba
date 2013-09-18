@@ -35,14 +35,23 @@ module Kotoba::Formatting
   #
   def inline_format(element, style = {})
     (style[:style] || []).each do |s|
-      element = inline_format_with_tag(element, tag_name(s))
+      element = content_tag(element, tag_name(s))
     end
     # TODO: CYMK support
-    element = inline_format_with_tag(element, :color, rgb: style[:color]) if style[:color]
+    element = content_tag(element, :color, rgb: style[:color]) if style[:color]
     inline_format_font(element, style)
   end
 
-  def inline_format_with_tag(element, tag, attributes = {})
+  # Wrap the element in a tag.
+  #
+  # @param element [String] content inside the tag.
+  # @param tag [String/Symbol] tag name, @see also `tag_name`.
+  # @param attributes [Hash] hash with attribues of tag, @see also
+  #   `inline_format_font`.
+  #
+  # @return [String] string wrapped in a tag.
+  #
+  def content_tag(element, tag, attributes = {})
     tag = tag_name(tag)
     "<#{tag}#{attributes_html(attributes)}>#{element}</#{tag}>"
   end
@@ -66,6 +75,6 @@ module Kotoba::Formatting
     font_attributes = [:name, :size, :character_spacing]
     font_style[:name] = font_style.delete(:font)
     font_style.select! { |key, value| font_attributes.include?(key) }
-    inline_format_with_tag(element, :font, font_style)
+    content_tag(element, :font, font_style)
   end
 end
