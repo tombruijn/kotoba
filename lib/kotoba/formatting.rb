@@ -1,4 +1,7 @@
 module Kotoba::Formatting
+  # Remap tag names that are not supported by prawn
+  TAG_MAP = { em: :i, italic: :i, strong: :b, bold: :b }
+
   # Formats a prefix.
   # If a {n} is found it is replaced with the value of the :count key found
   # in the style param.
@@ -31,12 +34,11 @@ module Kotoba::Formatting
   # @return [String] text surrounded with prawn inline formatting.
   #
   def inline_format(element, style = {})
-    if style[:style]
-      element = inline_format_italic(element) if style[:style].include?(:italic)
-      element = inline_format_bold(element) if style[:style].include?(:bold)
+    (style[:style] || []).each do |s|
+      element = inline_format_with_tag(element, tag_name(s))
     end
-    # TODO
-    element = inline_format_color(element, style[:color]) if style[:color]
+    # TODO: CYMK support
+    element = inline_format_with_tag(element, :color, rgb: style[:color]) if style[:color]
     inline_format_font(element, style)
   end
 
@@ -49,10 +51,15 @@ module Kotoba::Formatting
   end
 
   def inline_format_with_tag(element, tag, attributes = {})
+    tag = tag_name(tag)
     "<#{tag}#{attributes_html(attributes)}>#{element}</#{tag}>"
   end
 
   protected
+
+  def tag_name(tag)
+    TAG_MAP.key?(tag) ? TAG_MAP[tag] : tag
+  end
 
   def attributes_html(attributes)
     "".tap do |string|
@@ -62,21 +69,11 @@ module Kotoba::Formatting
     end
   end
 
-  def inline_format_color(element, color)
-    "<color rgb='#{color}'>#{element}</color>"
-  end
-
   def inline_format_font(element, style)
-    style_mapping = {
-      name: :style,
-      size: :size,
-      character_spacing: :character_spacing
-    }
-    string = "<font".tap do |s|
-      style_mapping.each do |name, key|
-        s << " #{name}='#{style[key]}'" if style[key]
-      end
-    end
-    string << ">#{element}</font>"
+    font_style = style.dup
+    font_attributes = [:name, :size, :character_spacing]
+    font_style[:name] = font_style.delete(:font)
+    font_style.select! { |key, value| font_attributes.include?(key) }
+    inline_format_with_tag(element, :font, font_style)
   end
 end

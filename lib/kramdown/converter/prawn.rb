@@ -49,8 +49,7 @@ module Kramdown::Converter
 
     def convert_codespan(el, options = {})
       style = style_for(:code)
-      # TODO
-      inline_format_element(el, style)
+      inline_format(to_text(el, style), style)
     end
 
     def convert_codeblock(el, options = {})
@@ -99,8 +98,10 @@ module Kramdown::Converter
     end
 
     def convert_html_element(el, style = {})
-      inline_format_with_tag to_text(el, style), el.value, el.attr
+      inline_format_with_tag to_text(el, style), (el.value || el.type), el.attr
     end
+    alias :convert_strong :convert_html_element
+    alias :convert_em :convert_html_element
 
     def convert_xml_comment(el, options = {})
       raise "XML comment not supported: #{el.inspect}"
@@ -144,12 +145,6 @@ module Kramdown::Converter
       raise "Raw not supported: #{el.inspect}"
     end
 
-    def convert_em(el, style = {})
-      tag = el.type == :em ? :i : :b
-      inline_format_with_tag to_text(el, style), tag
-    end
-    alias :convert_strong :convert_em
-
     def convert_entity(el, options = {})
       ::Kramdown::Utils::Entities.entity(el.value.to_s).char
     end
@@ -176,7 +171,8 @@ module Kramdown::Converter
 
     def to_text(el, style)
       prefix = format_prefix(style[:prefix], style)
-      "#{prefix}#{convert_children(el.children).join}"
+      text = el.children.empty? ? el.value : convert_children(el.children).join
+      "#{prefix}#{text}"
     end
 
     def write_text(text, style)
@@ -191,17 +187,6 @@ module Kramdown::Converter
         results << convert(child, options)
       end
       results
-    end
-
-    # TODO
-    def inline_format_element(el, style = {})
-      element = if el.children.empty?
-        el.value
-      else
-        convert_children(el.children).join
-      end
-
-      inline_format(element, style)
     end
 
     # Returns the layout configuration for a specific element type
