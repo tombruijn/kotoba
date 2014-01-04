@@ -34,7 +34,7 @@ module Kotoba::Formatting
   # @return [String] text surrounded with prawn inline formatting.
   #
   def inline_format(element, style = {})
-    (style[:style] || []).each do |s|
+    (Array(style[:style]) || []).each do |s|
       element = content_tag(element, tag_name(s))
     end
     # TODO: CYMK support

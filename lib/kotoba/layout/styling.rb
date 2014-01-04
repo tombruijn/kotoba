@@ -26,6 +26,11 @@ class Kotoba::Layout
     #
     def to_h
       {}.tap do |hash|
+        # OPTIONS.each do |option|
+        #   value = send(option)
+        #   puts value.inspect
+        #   hash[option.to_sym] = value if (value.respond_to?(:empty?) && !value.empty?) || value > 0
+        # end
         hash[:font] = font if font_available?
         hash[:size] = size
         hash[:color] = color unless color.empty?
@@ -33,7 +38,7 @@ class Kotoba::Layout
         hash[:direction] = direction
         hash[:character_spacing] = character_spacing if character_spacing > 0
         hash[:leading] = line_height
-        hash[:style] = style unless style.empty?
+        # hash[:style] = style unless style.empty?
         hash[:indent_paragraphs] = indent
         hash[:prefix] = prefix unless prefix.empty?
       end
