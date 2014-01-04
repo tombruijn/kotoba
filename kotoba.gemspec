@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
   gem.executables   = ["kotoba"]
   gem.version       = Kotoba::VERSION
 
-  gem.add_dependency "prawn", "~> 1.0.0.rc"
+  gem.add_dependency "prawn", "~> 0.13.1"
   gem.add_dependency "thor"
   gem.add_dependency "kramdown"
   gem.add_dependency "hashie"
