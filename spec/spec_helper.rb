@@ -22,6 +22,7 @@ module Kotoba
   def self.remove_paths!
     remove_const(:APP_DIR)
     remove_const(:BOOK_DIR)
+    remove_const(:CHAPTERS_DIR)
     remove_const(:ASSETS_DIR)
     remove_const(:BUILD_DIR)
   end
@@ -29,11 +30,13 @@ module Kotoba
   def self.set_original_constant_values!
     @APP_DIR ||= APP_DIR
     @BOOK_DIR ||= BOOK_DIR
+    @CHAPTERS_DIR ||= CHAPTERS_DIR
     @ASSETS_DIR ||= ASSETS_DIR
     @BUILD_DIR ||= BUILD_DIR
     remove_paths!
     self.const_set(:APP_DIR, @APP_DIR)
     self.const_set(:BOOK_DIR, @BOOK_DIR)
+    self.const_set(:CHAPTERS_DIR, @CHAPTERS_DIR)
     self.const_set(:ASSETS_DIR, @ASSETS_DIR)
     self.const_set(:BUILD_DIR, @BUILD_DIR)
   end
@@ -43,6 +46,7 @@ module Kotoba
     self.const_set(:APP_DIR, Pathname.new(File.join(LIB_DIR, "spec",
       "support", "project")))
     self.const_set(:BOOK_DIR, File.join(APP_DIR, "book"))
+    self.const_set(:CHAPTERS_DIR, File.join(BOOK_DIR, "chapters"))
     self.const_set(:ASSETS_DIR, File.join(BOOK_DIR, "assets"))
     self.const_set(:BUILD_DIR, File.join(TMP_DIR, "build"))
   end

@@ -6,7 +6,7 @@ module Kotoba
 
     def files
       @files ||=
-        Dir.glob(File.join(Kotoba::BOOK_DIR, "chapters", "**", "*"))
+        Dir.glob(File.join(Kotoba::CHAPTERS_DIR, "**", "*"))
           .select { |file| File.file?(file) }
     end
 
