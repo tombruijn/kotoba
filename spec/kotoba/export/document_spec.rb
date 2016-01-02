@@ -11,21 +11,21 @@ describe Kotoba::Export::Document do
     before do
       Kotoba.config do |c|
         @first_layout = c.layout_for 1 do |l|
-          l.width = 10.cm
-          l.height = 10.cm
+          l.width = 1000
+          l.height = 1000
         end
         @second_layout = c.layout_for 2 do |l|
-          l.width = 20.cm
-          l.height = 20.cm
+          l.width = 2000
+          l.height = 2000
         end
         @default_layout = c.layout do |l|
-          l.width = 30.cm
-          l.height = 30.cm
+          l.width = 3000
+          l.height = 3000
         end
         @third_layout = c.layout_for 4..5 do |l|
           l.orientation = :landscape
-          l.width = 40.cm
-          l.height = 50.cm
+          l.width = 4000
+          l.height = 5000
         end
       end
     end
@@ -70,14 +70,14 @@ describe Kotoba::Export::Document do
       subject { PDF::Inspector::Page.analyze(document.render).pages }
 
       it "should use the configured layout per page" do
-        subject[0][:size].should == [10.cm, 10.cm]
-        subject[1][:size].should == [20.cm, 20.cm]
-        subject[2][:size].should == [30.cm, 30.cm]
+        subject[0][:size].should == [1000, 1000]
+        subject[1][:size].should == [2000, 2000]
+        subject[2][:size].should == [3000, 3000]
       end
 
       it "should put page in correct orientation" do
-        subject[3][:size].should == [40.cm, 50.cm]
-        subject[4][:size].should == [40.cm, 50.cm]
+        subject[3][:size].should == [4000, 5000]
+        subject[4][:size].should == [4000, 5000]
       end
     end
   end
