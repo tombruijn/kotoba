@@ -24,9 +24,9 @@ module Kotoba
       @encoding = "UTF-8"
       @filename = ""
       @exporters = []
-      @layout_for = Hash.new { |hash, key|
+      @layout_for = Hash.new do |hash, key|
         hash[key] = Layout.new(page_range: key)
-      }
+      end
     end
 
     # Loads a Kotoba configuration file.

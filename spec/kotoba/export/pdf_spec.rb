@@ -1,8 +1,9 @@
 require "spec_helper"
 
 describe Kotoba::Export::Pdf do
-  before :all do
-    @exporter = Kotoba::Export::Pdf.new
+  let(:exporter) { Kotoba::Export::Pdf.new }
+  before do
+    set_default_config
     Kotoba.config do |config|
       config.filename = "pdf-test"
       config.export_to :pdf
@@ -11,10 +12,10 @@ describe Kotoba::Export::Pdf do
 
   describe ".export" do
     describe "build" do
-      before :all do
+      before do
         clear_tmp_directory
         Kotoba::Export::Base.prepare_build_directory
-        @exporter.export
+        exporter.export
       end
 
       it "should write the file" do
@@ -23,4 +24,6 @@ describe Kotoba::Export::Pdf do
       end
     end
   end
+
+  after { Kotoba.clear_config! }
 end

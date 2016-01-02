@@ -5,6 +5,7 @@ describe Kotoba::Export::Document do
 
   describe "#generate" do
     let(:filename) { File.join(Kotoba::BUILD_DIR, "file.pdf") }
+    before { set_default_config }
 
     it "should call content methods" do
       Kotoba::Export::Document.any_instance.should_receive(:add_book!)
@@ -18,6 +19,8 @@ describe Kotoba::Export::Document do
       Kotoba::Export::Document.generate(filename)
       File.exists?(filename).should be_true
     end
+
+    after { Kotoba.clear_config! }
   end
 
   describe ".add_book!" do
