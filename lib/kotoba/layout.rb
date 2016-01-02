@@ -149,7 +149,7 @@ module Kotoba
       if page_size.is_a?(Array)
         page_size
       else
-        Prawn::Document::PageGeometry::SIZES[size]
+        PDF::Core::PageGeometry::SIZES[size]
       end
     end
   end
