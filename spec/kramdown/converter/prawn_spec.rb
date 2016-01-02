@@ -17,21 +17,21 @@ describe Kramdown::Converter::Prawn do
       let(:text) { "text using custom font" }
       before do
         Kotoba.config do |c|
-          c.add_font "Nobile", {
-            normal: "Nobile-Regular.ttf",
-            italic: "Nobile-Italic.ttf",
-            bold: "Nobile-Bold.ttf",
-            bold_italic: "Nobile-BoldItalic.ttf"
+          c.add_font "LiberationSerif", {
+            normal: "LiberationSerif-Regular.ttf",
+            italic: "LiberationSerif-Italic.ttf",
+            bold: "LiberationSerif-Bold.ttf",
+            bold_italic: "LiberationSerif-BoldItalic.ttf"
           }
           c.layout.default do |d|
-            d.font = "Nobile"
+            d.font = "LiberationSerif"
           end
         end
         prawn.register_fonts!
       end
 
       it "should configure font" do
-        prawn.should_receive(:font).with("Nobile").and_call_original
+        prawn.should_receive(:font).with("LiberationSerif").and_call_original
         prawn.should_receive(:text).
           with("text using custom font", kind_of(Hash))
       end

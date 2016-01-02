@@ -118,14 +118,14 @@ describe Kotoba::Export::Document do
     before do
       Kotoba.clear_config!
       Kotoba.config do |c|
-        c.add_font "Nobile", {
-          normal: "Nobile-Regular.ttf",
-          italic: "Nobile-Italic.ttf",
-          bold: "Nobile-Bold.ttf",
-          bold_italic: "Nobile-BoldItalic.ttf"
+        c.add_font "LiberationSerif", {
+          normal: "LiberationSerif-Regular.ttf",
+          italic: "LiberationSerif-Italic.ttf",
+          bold: "LiberationSerif-Bold.ttf",
+          bold_italic: "LiberationSerif-BoldItalic.ttf"
         }
         c.layout.default do |d|
-          d.font = "Nobile"
+          d.font = "LiberationSerif"
         end
       end
       document.register_fonts!
@@ -133,16 +133,16 @@ describe Kotoba::Export::Document do
 
     it "should add text with custom font" do
       document.add_chapter double(source: [
-        "This text is printed in the Nobile font. Some _italic "\
-        "text_ and some __strong text__ and _**together**_."
+        "This text is printed in the LiberationSerif font. Some _italic "\
+        "text_ and some __strong text__ and some _**both**_."
       ])
 
       text = PDF::Inspector::Text.analyze(document.render)
       fonts = text.font_settings.map { |e| e[:name].to_s.gsub(/\A\w+\+/, "") }
-      fonts.should include("Nobile-Regular")
-      fonts.should include("Nobile-Italic")
-      fonts.should include("Nobile-Bold")
-      fonts.should include("Nobile-BoldItalic")
+      fonts.should include("LiberationSerif") # Regular version
+      fonts.should include("LiberationSerif-Italic")
+      fonts.should include("LiberationSerif-Bold")
+      fonts.should include("LiberationSerif-BoldItalic")
     end
   end
 end

@@ -68,11 +68,11 @@ end
 
 def set_default_config
   Kotoba.config do |c|
-    c.add_font "Nobile",
-      normal: "Nobile-Regular.ttf",
-      italic: "Nobile-Italic.ttf",
-      bold: "Nobile-Bold.ttf",
-      bold_italic: "Nobile-BoldItalic.ttf"
+    c.add_font "LiberationSerif",
+      normal: "LiberationSerif-Regular.ttf",
+      italic: "LiberationSerif-Italic.ttf",
+      bold: "LiberationSerif-Bold.ttf",
+      bold_italic: "LiberationSerif-BoldItalic.ttf"
 
     c.layout do |l|
       l.width = 10.cm
@@ -85,7 +85,7 @@ def set_default_config
       end
 
       l.default do |d|
-        d.font = "Nobile"
+        d.font = "LiberationSerif"
       end
     end
   end
