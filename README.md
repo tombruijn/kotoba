@@ -1,9 +1,12 @@
 # Kotoba
 
+[![Code Climate](https://codeclimate.com/github/tombruijn/kotoba.png)]
+  (https://codeclimate.com/github/tombruijn/kotoba)
+
 Book manager for Markdown files in Ruby.
 Exports to PDF using the Ruby Prawn library.
 
-_Currently Kotoba is in development.
+_Currently Kotoba is still in development.
 It is not stable at all or feature ready yet.
 See the GitHub issue tracker for the current status of features and plans.  
 Use the this quick
@@ -12,36 +15,50 @@ during initial development._
 
 ## Installation
 
-First install the gem: `gem install kotoba`
+First install the gem:
 
-Then create a new Kotoba project: `kotoba new <my book>`
+```
+gem install kotoba
+```
+
+Then create a new Kotoba project:
+
+```
+kotoba new <my book>
+```
 
 ## Usage
 
 Kotoba is controlled from the command line.
 `kotoba help` gives a quick overview of the available commands.
 
-### Create a project `kotoba new <my book>`
+### Create a project
 
-To create your first project run the `kotoba new <my book>` command.
+To create your first project run the following command:
 
-It creates a `config.rb` file (see config below), a Gemfile and a `book`
-directory.
-In the book directory you will find a `chapters` directory.
-This is where Kotoba will look for files in alphabetical order and combine
-them on export.
+```
+kotoba new <my book>
+```
+
+This creates a `config.rb` file (see config below), a Gemfile and a directory
+structure.
+You'll see there's a `chapters/` directory. This is where Kotoba will look for
+the content of your book in Markdown files. It will read them in in
+alphabetical order and combine them on export.
 
 ### Writing your book
 
 Write your book in Markdown files. It's easy enough to start since you
-can use your own editor. Create a new file in the `book/chapters` directory
+can use your own editor. Create a new file in the `chapters/` directory
 to get started. Alternatively, if you like more management of your files,
 create subdirectories for each chapter and place your files in each directory.
 
 Example:
 
 ```
-book/
+./
+- config.rb
+- Gemfile
 - chapters/
   - 01_intro/
     - 01_intro.md
@@ -57,16 +74,20 @@ Note: Kotoba uses a alphabetic sorting, which pretty closely resembles most
 operating systems' sorting. Numbers and symbols are sorted before letters.
 Other than for sorting purposes it does not matter what your files are called.
 
-__TODO___: Explain how Markdown metadata works and how this can be useful in
+__TODO__: Explain how Markdown metadata works and how this can be useful in
 combination with the server.
 
-### Exporting `kotoba export`
+### Exporting
+
+```
+kotoba export
+```
 
 The goal of Kotoba is to provide an easy way to export Markdown files to PDF.
 With the `kotoba export` command you will export your book to PDF.
 
-An export will create a `build` directory in your project's root if none exists.
-It will place the export result into this directory when it is done.
+An export will create a `build/` directory in your project's root if none
+exists. It will place the export result into this directory when it is done.
 
 ## Requirements
 
@@ -74,28 +95,15 @@ It will place the export result into this directory when it is done.
 
 ## Supported exports
 
-- PDF (through Prawn)
+- PDF (through [Prawn](https://github.com/prawnpdf/prawn))
 
-## Future features
+## Features
 
-- Manage markdown files in an easy way.
+- Export Markdown to PDF!
 - Use your own editor!
-- Export to PDF.
-- Generate a Table of Contents. (not yet!)
 - Customize the layout and styling of your book.
 - Add your own fonts to the PDF export.
-- Kotoba server (will be moved into its own gem)  
-  The server will allow for more easy browsing through your book using the
-  metadata you can add to the markdown files.
-  - A simple overview of all chapters.
-    Shows a short summary/full summary or keywords, multiple views will be
-    supported.
-  - Page - _like_ preview.  
-    Actual pages with page breaks, like LibreOffice/OpenOffice Writer or
-    Microsoft Office Word, will probably not be supported in this preview mode.
-  - Keywords link to a keyword page which lists all chapters where they occur.
-  - Simple statistics:
-    - See word, line and chapter count.
+- Generate a Table of Contents. - __TODO__
 
 ## Config
 
@@ -167,7 +175,7 @@ Kotoba.config do |config|
       d.line_height = 13.pt
       d.style = [:bold] # bold, italic, not supported yet
     end
-    
+
     # Styling for paragraphs
     # A paragraph is everything not a different element
     l.paragraph do |p|
@@ -247,10 +255,6 @@ Kotoba.config do |config|
   end
 end
 ```
-
-## Code status
-
-[![Code Climate](https://codeclimate.com/github/tombruijn/kotoba.png)](https://codeclimate.com/github/tombruijn/kotoba)
 
 ## License
 
